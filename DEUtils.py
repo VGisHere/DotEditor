@@ -1,6 +1,6 @@
 # coding=utf8
 '''
-Copyright (R) 2015 Vincent.H <forever.h@gmail.com>
+Copyright (R) 2021 Vaibhav.Gilhotra <spaceholder_email>
 
 Published under Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0.html).
 -------------------------------------------------------------------------------------
@@ -26,7 +26,10 @@ def resource_path(relative_path):
 
 def escape_dot_string(s):
     
-    s = s.strip()
+    if type(s) != str:
+        return ''
+    
+    s = str(s.strip())
     if len(s) == 0: return s
     
     # Kill '\n' at the end of s.
@@ -36,11 +39,11 @@ def escape_dot_string(s):
         else:
             break
     
-    R_PAIR = [('\\l',  '*!&@SL'),
-              ('\\n',  '*!&@SN'),
-              ('\\r',  '*!&@SR'),
-              ('\\"',  '*!&@SQ'),
-              ('\\\\', '*!&@SS'),
+    R_PAIR = [['\\l',  '*!&@SL'],
+              ['\\n',  '*!&@SN'],
+              ['\\r',  '*!&@SR'],
+              ['\\"',  '*!&@SQ'],
+              ['\\\\', '*!&@SS'],
               ]
 
     SQ = '*!&@SQ'
@@ -60,12 +63,12 @@ def escape_dot_string(s):
     # Turn back rp
     for rp in R_PAIR:
         s = s.replace(rp[1], rp[0])
-        
+    
     return s
 
 def remove_double_quote(s):
     '''Remove double quote if nessary.'''
-    if not isinstance(s, basestring):
+    if not isinstance(s, str):
         return s
 
     s = s.strip()    
@@ -79,7 +82,7 @@ def remove_double_quote(s):
 
 def add_double_quote(s):
     '''Add double quote around s if nessary.'''
-    if not isinstance(s, basestring):
+    if not isinstance(s, str):
         return s
     
     s = s.strip()
@@ -168,11 +171,11 @@ def to_unicode(s):
     
     u_str = None
     try:
-        u_str = unicode(s)
+        u_str = str(s)
     except:
-        u_str = s.decode('utf8')
+        u_str = str(s)
     
-    return u_str.encode('utf8')
+    return str(u_str)
 
 def gen_arrow_image(arrowtype, out_filepath):
     script = '''
@@ -194,7 +197,7 @@ digraph G {
         
     return
 
-def get_colors_in_schcme(scheme_name):
+def get_colors_in_scheme(scheme_name):
     ### Build dict of scheme.
     # X11.
     if scheme_name == 'x11':
@@ -215,7 +218,7 @@ def get_colors_in_schcme(scheme_name):
     # Svg.
     elif scheme_name == 'svg':
         svg_dict = {}
-        in_f = open(resource_path('resource/color_scheme/svg.csv'), 'rb')
+        in_f = open(resource_path('resource/color_scheme/svg.csv'))
         cr = csv.reader(in_f, delimiter=',')
         for row in cr:
             svg_dict[row[0]] = tuple(map(int, row[1:]))
@@ -226,7 +229,7 @@ def get_colors_in_schcme(scheme_name):
     # Colorbrewer.
     else:
         all_cb_dict = {}
-        in_f = open(resource_path('resource/color_scheme/colorbrewer.csv'), 'rb')
+        in_f = open(resource_path('resource/color_scheme/colorbrewer.csv'))
         cr = csv.reader(in_f, delimiter=',')
         for row in cr:
             cb_name, cb_idx = row[0].split('.')
@@ -279,8 +282,8 @@ def normalize_imglist(image_list):
             pos_x = int((max_w-w)/2)
             pos_y = int((max_h-h)/2)
     
-            new_img = wx.EmptyImage(max_w, max_h)
-            new_img.Clear(0xff)
+            new_img = wx.Image(max_w, max_h)
+            new_img.Clear()
             new_img.Paste(img, pos_x, pos_y)
             il.Add(new_img.ConvertToBitmap())
     
@@ -296,7 +299,7 @@ ABCD"
 "ABCD"
 "ABC"
     '''
-    print len(smart_indent(s, ' '*4))
+    print(len(smart_indent(s, ' '*4)))
     
         
     #print gen_CB_palette_img('PuBu')

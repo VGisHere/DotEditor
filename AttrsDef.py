@@ -1,6 +1,6 @@
 # coding=utf8
 '''
-Copyright (R) 2015 Vincent.H <forever.h@gmail.com>
+Copyright (R) 2021 Vaibhav.Gilhotra <spaceholder_email>
 
 Published under Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0.html).
 -------------------------------------------------------------------------------------
@@ -23,12 +23,18 @@ while 1:
     if line == '': break
     cb_name = (line.split(',')[0]).split('.')[0]
     cs_set.add(cb_name)
-cs_list = list(cs_set)
-cs_list.sort()
+cs_list = sorted(list(cs_set))
+# cs_list.sort()
 E_COLORSCHEME.extend(cs_list)
 
 E_IMAGESCALE = ['true','false','width','height','both']
 E_LABELLOC = ['c','t','b']
+
+E_SHAPE_MIN = ['box', 'ellipse', 'oval', 'circle', 'triangle', 'diamond', 'parallelogram']
+E_STYLE_MIN = ['filled','solid', 'dashed', 'dotted', 'bold', 'rounded', 'invis']
+
+E_EDGE_TYPE_MIN     = ['normal', 'box', 'dot', 'inv', 'diamond' ]
+E_EDGE_STYLE_MIN    = ['solid', 'dashed', 'dotted', 'bold', 'tapered', 'invis']
 
 E_SHAPE = ['box', 'polygon', 'ellipse', 'oval', 'circle', 'point', 'egg', 'triangle',
            'plaintext', 'plain', 'diamond', 'trapezium', 'parallelogram', 'house', 
@@ -48,14 +54,14 @@ E_FONTNAME = ['serif', 'sans-serif', 'cursive', 'fantasy', 'monospace']
 NODE_ATTRS_DEFINE = [                          
 ### name,           default_value,  category,   group,          type,        param,          description
     ['color',       'black',        'basic',   'color_attrs',   "color",     None,           'node shape color'                                      ],
-    ['colorscheme', 'x11',          'basic',   'color_attrs',   "colorscheme",None,          'scheme for interpreting'                               ],
-    ['comment',     None,           'extra',   None,            "bigstring", None,           'any string(format-dependent)'                          ],
-    ['distortion',  0,              'extra',   'shape-param',   "float",     None,           'node distortion for shape=polygon'                     ],
+    ['colorscheme', 'x11',          'advance', 'color_attrs',   "colorscheme",None,          'scheme for interpreting'                               ],
+    ['comment',     None,           'basic',   None,            "bigstring", None,           'any string(format-dependent)'                          ],
+    ['distortion',  0,              'advance', 'shape-param',   "float",     None,           'node distortion for shape=polygon'                     ],
     ['fillcolor',   'lightgrey',    'basic',   'color_attrs',   "color",     None,           'node fill color'                                       ],
     ['fixedsize',   False,          'extra',   None,            "bool",      None,           'label text has no affect on node size'                 ],
     ['fontcolor',   'black',        'basic',   'color_attrs',   "color",     None,           'type face color'                                       ],
-    ['fontname',    'Times-Roman',  'basic',   'font',          "enum_edit", E_FONTNAME,     'font family'                                           ],
-    ['fontsize',    14,             'basic',   'font',          "int",       None,           'point size of label'                                   ],
+    ['fontname',    'Times-Roman',  'advance', 'font',          "enum_edit", E_FONTNAME,     'font family'                                           ],
+    ['fontsize',    14,             'advance', 'font',          "int",       None,           'point size of label'                                   ],
     ['group',       None,           'extra',   None,            "string",    None,           'If the end points of an edge belong to the same group,'+\
                                                                                              ' i.e., have the same group attribute, parameters are'+\
                                                                                              ' set to avoid crossings and keep the edges straight.'  ],
@@ -63,14 +69,16 @@ NODE_ATTRS_DEFINE = [
     ['width',       .75,            'extra',   'node_size',     "float",     None,           'minimum width in inches'                               ],
     ['id',          None,           'extra',   None,            "string",    None,           'any string(user-defined output object tags)'           ],
     ['image',       None,           'extra',   None,            "img_file",  None,           'image file name'                                       ],
-    ['imagescale',  'false',        'extra',   None,            "enum",      E_IMAGESCALE,   'true,width,height,both'                                ],
+    ['imagescale',  'false',        'advance', None,            "enum",      E_IMAGESCALE,   'true,width,height,both'                                ],
     ['label',       None,           'basic',   None,            "bigstring", None,           'any string'                                            ],
+    ['headlabel',   None,           'basic',   None,            "bigstring", None,           'any string'                                            ],
+    ['taillabel',   None,           'basic',   None,            "bigstring", None,           'any string'                                            ],
     ['labelloc',    'c',            'extra',   None,            "enum",      E_LABELLOC,     'node label vertical alignment(center, top, bottom)'    ],
     ['layer',       None,           'advance', None,            "string",    None,           'all, id or id:id, or a comma-separated list of the former'],
-    ['margin',      '0.11,0.55',    'extra',   None,            "string",    None,           'space around label'                                    ],
+    ['margin',      '0.11,0.55',    'advance',   None,          "string",    None,           'space around label'                                    ],
     ['nojustify',   False,          'extra',   None,            "bool",      None,           'if true, justify to label, not node'                   ],
     ['orientation', 0.0,            'extra',   'shape-param',   "float",     None,           'node rotation angle'                                   ],
-    ['penwidth',    1.0,            'basic',   None,            "float",     None,           'width of pen for drawing boundaries, in points'        ],
+    ['penwidth',    1.0,            'advance',   None,          "float",     None,           'width of pen for drawing boundaries, in points'        ],
     ['peripheries', None,           'extra',   'shape-param',   "int",       None,           'number of node boundaries'                             ],
     ['regular',     False,          'extra',   'shape-param',   "bool",      None,           'force polygon to be regular'                           ],
     ['samplepoints',8,              'advance', None,            "int",       None,           'number vertices to convert circle or ellipse'          ],
@@ -103,8 +111,8 @@ EDGE_ATTRS_DEFINE = [
     ['arrowhead',   'normal',       'basic',    'arrow',     "enum_arrowtype",E_ARROWTYPE,  'style of arrowhead at head end'                        ],
     ['arrowsize',   1.0,            'basic',    'arrow',     "float",       None,           'scaling factor for arrowheads'                         ],
     ['arrowtail',   'normal',       'basic',    'arrow',     "enum_arrowtype",E_ARROWTYPE,  'style of arrowhead at tail end'                        ],
-    ['color',       'black',        'basic',    'color_attrs',"color",      None,           'edge stroke color'                                     ],
-    ['colorscheme', 'x11',          'basic',    'color_attrs',"colorscheme", None,          'scheme for interpreting color names'                   ],
+    ['color',       'black',        'advance',    'color_attrs',"color",      None,           'edge stroke color'                                     ],
+    ['colorscheme', 'x11',          'advance',    'color_attrs',"colorscheme", None,          'scheme for interpreting color names'                   ],
     ['comment',     None,           'extra',    None,        "bigstring",   None,           'any string(format-dependent)'                          ],
     ['constraint',  True,           'extra',    None,        "bool",        None,           'use edge to affect node ranking'                       ],
     ['decorate',    False,          'extra',    None,        "bool",        None,           'if set, draws a line connecting labels with their edges'],
@@ -114,8 +122,8 @@ EDGE_ATTRS_DEFINE = [
     ['edgetarget',  None,           'advance',  None,        "enum",        E_TARGET,       'if URL is set, determines browser window for URL'      ],
     ['edgetooltip', None,           'advance',  None,        "string",      None,           'tooltip annotation for non-label part of edge'         ],
     ['fontcolor',   'black',        'basic',    'color_attrs', "color",     None,           'type face color'                                       ],
-    ['fontname',    'Times-Roman',  'basic',    'font',      "enum_edit",   E_FONTNAME,     'font family'                                           ],
-    ['fontsize',    14,             'basic',    'font',      "int",         None,           'point size of label'                                   ],
+    ['fontname',    'Times-Roman',  'advance',    'font',      "enum_edit",   E_FONTNAME,     'font family'                                           ],
+    ['fontsize',    14,             'advance',    'font',      "int",         None,           'point size of label'                                   ],
     ['headclip',    True,           'extra',    'head',      "bool",        None,           'if false, edge is not clipped to head node boundary'   ],
     ['headURL',    None,            'extra',    'head',      "string",      None,           'URL attached to head label'                            ],
     ['headhref',    None,           'extra',    'head',      "string",      None,           'synonym for headURL'                                   ],
@@ -140,7 +148,7 @@ EDGE_ATTRS_DEFINE = [
     ['lhead',       None,           'advance',  None,        "string",      None,           'name of cluster to use as head of edge'                ],
     ['ltail',       None,           'advance',  None,        "string",      None,           'name of cluster to use as tail of edge'                ],
     ['minlen',      1,              'advance',  None,        "int",         None,           'minimum rank distance between head and tail'           ],
-    ['penwidth',    1.0,            'basic',    None,        "float",       None,           'width of pen for drawing edge stroke, in points'       ],
+    ['penwidth',    1.0,            'advance',  None,        "float",       None,           'width of pen for drawing edge stroke, in points'       ],
     ['samehead',    None,           'advance',  None,        "string",      None,           'tag for head node; edge heads with the same tag are merged onto the same port'],
     ['sametail',    None,           'advance',  None,        "string",      None,           'tag for tail node; edge tails with the same tag are merged onto the same port'],
     ['style',       None,           'basic',    None,        "enum_combine",E_EDGE_STYLE,   'graphics options, e.g. bold, dotted, filled'           ],
@@ -153,7 +161,7 @@ EDGE_ATTRS_DEFINE = [
     ['tailtooltip', None,           'extra',    'tail',      "string",      None,           'tooltip annotation near tail of edge'                  ],
     ['target',      None,           'advance',  None,        "enum_edit",   E_TARGET,       'if URL is set, determines browser window for URL'      ],
     ['tooltip',     None,           'extra',    None,        "string",      None,           'tooltip annotation'                                    ],
-    ['weight',      1,              'basic',    None,        "int",         None,           'integer cost of stretching an edge'                    ],    
+    ['weight',      1,              'extra',    None,        "int",         None,           'integer cost of stretching an edge'                    ],    
     ['URL',         None,           'extra',    None,        'string',      None,           'URL associated with edge (format-dependent)'           ],
 ]
 
@@ -174,7 +182,7 @@ E_LAYOUT = ['circo', 'dot', 'fdp', 'sftp', 'neato', 'twopi']
 
 GRAPH_ATTRS_DEFINE = [
 ### name,           default_value,  category,   group,      type,           param,          description
-    ['bgcolor',     '#ffffff00',    'basic',    'color_attrs','color',      None,           'background color for drawing, plus initial fill color' ],
+    ['bgcolor',     'white',        'basic',    'color_attrs','color',      None,           'background color for drawing, plus initial fill color' ],
     ['center',      False,          'extra',    None,       'bool',         None,           'center drawing on page'                                ],                  
     ['clusterrank', 'local',        'extra',    'cluster',  'enum',         E_CLUSTERRANK,  'mode used for handling clusters.'                      ],
     ['color',       'black',        'extra',    'color_attrs','color',      None,           'for clusters, outline color, and fill color if "fillcolor" not defined'],
@@ -182,13 +190,13 @@ GRAPH_ATTRS_DEFINE = [
     ['comment',     None,           'extra',    None,       'bigstring',    None,           'any string (format-dependent)'                         ],
     ['compound',    False,          'extra',    None,       'bool',         None,           'allow edges between clusters'                          ],
     ['concentrate', False,          'extra',    None,       'bool',         None,           'enables edge concentrators'                            ],
-    ['dpi',         96,             'extra',    None,       'int',          None,           'dots per inch for image output'                        ],
+    ['dpi',         240,            'extra',    None,       'int',          None,           'dots per inch for image output'                        ],
     ['fillcolor',   'black',        'extra',    'color_attrs','color',      None,           'cluster fill color'                                    ],
     ['fontcolor',   'black',        'basic',    'color_attrs','color',      None,           'type face color'                                       ],
-    ['fontname',    'Times-Roman',  'basic',    'graph_font','enum_edit',   E_FONTNAME,     'font family'                                           ],
+    ['fontname',    'Times-Roman',  'advance',    'graph_font','enum_edit',   E_FONTNAME,     'font family'                                           ],
     ['fontnames',   None,           'advance',  None,       'string',       None,           'svg,ps,gd(SVG only)'                                   ],
     ['fontpath',    None,           'advance',  None,       'string',       None,           'list of directories to search for fonts'               ],
-    ['fontsize',    None,           'basic',    'graph_font','int',         None,           'point size of label'                                   ],
+    ['fontsize',    None,           'advance',  'graph_font','int',         None,           'point size of label'                                   ],
     ['id',          None,           'extra',    None,       'string',       None,           'any string (user-defineed output object tags'          ],
     ['label',       None,           'basic',    None,       'bigstring',    None,           'any string'                                            ],
     ['labeljust',   'c',            'extra',    'cluster',  'enum',         E_LABELJUST,    '"l" and "r" for left- and right-justified cluster labels, respectively'],
@@ -209,15 +217,15 @@ GRAPH_ATTRS_DEFINE = [
     ['pencolor',    'black',        'extra',    'cluster',  'color',        None,           'color for drawing cluster boundaries'                  ],
     ['penwidth',    1.0,            'extra',    'cluster',  'float',        None,           'width of pen for drawing boundaries, in points'        ],
     ['peripheries', 1,              'extra',    'cluster',  'enum',         ['0','1'],      'number of cluster boundaries'                          ],
-    ['rank',        None,           'advance',  'rank_attr','enum',         E_RANK,         'rank constraints on the nodes in a subgraph.'          ],
-    ['rankdir',     'TB',           'advance',  'rank_attr','enum',         E_RANKDIR,      'LR (left to right) or TB (top to bottom)'              ],
-    ['ranksep',     0.75,           'advance',  'rank_attr','float',        None,           'separation between ranks, in inches'                   ],
+    ['rank',        None,           'basic',    None,       'enum_choice',  E_RANK,         'rank constraints on the nodes in a subgraph.'          ],
+    ['rankdir',     None,           'basic',    None,       'enum_choice',  E_RANKDIR,      'LR (left to right) or TB (top to bottom)'              ],
+    ['ranksep',     1,              'advance',  None,       'float',        None,           'separation between ranks, in inches'                   ],
     ['ratio',       None,           'extra',    None,       'enum_edit',    E_RATIO,        'sets the aspect ratio (drawing height/drawing width) for the drawing.'],
-    ['rotate',      0,              'basic',    None,       'enum',         ['0','90'],     'if 90, set orientation to landscape'                   ],
+    ['rotate',      0,              'advance',  None,       'enum',         ['0','90'],     'if 90, set orientation to landscape'                   ],
     ['samplepoints',8,              'advance',  None,       'int',          None,           'number of points used to represent ellipses and circles on output.'],
     ['searchsize',  30,             'advance',  None,       'int',          None,           'maximum edges with negative cut values to check when looking for a minimum one during network simplex'],
     ['size',        None,           'advance',  None,       'string',       None,           'maximum drawing size, in inches'                       ],
-    ['splines',     None,           'extra',    None,       'enum',         E_SPLINES,      'draw edges as splines, polylines,lines'                ],
+    ['splines',     None,           'basic',    None,       'enum_choice',  E_SPLINES,      'draw edges as splines, polylines,lines'                ],
     ['style',       None,           'basic',    None,       'enum_combine', E_GRAPH_STYLE,  'graphics options, e.g. filled for clusters'            ],
     ['stylesheet',  None,           'advance',  None,       'string',       None,           'pathname or URL to XML style sheet for SVG'            ],
     ['target',      None,           'advance',  None,       'enum_edit',    E_TARGET,       'if URL is set, determines browser window for URL'      ],
@@ -275,7 +283,7 @@ def get_dot_attr_structure(g_type):
         if c not in cates: cates.append(c)
         
         ### Init cate_dict key place.
-        if not cate_dict.has_key(c): cate_dict[c] = []
+        if not c in cate_dict: cate_dict[c] = []
         
         ### Build groups list.
         g = line[3]
@@ -295,9 +303,24 @@ def get_dot_attr_structure(g_type):
         a_name = line[0]
         # Create a group "cate_name_None" to store that attrs without group.
         if g is None: g = c+"_None" 
-        if not group_dict.has_key(g):
+        if not g in group_dict:
             group_dict[g] = []
         group_dict[g].append(a_name)
+
+    cat_priority ={ 0   :   'minimal',
+                    1   :   'basic'  ,
+                    2   :   'advance',
+                    3   :   'extra'  ,
+                }
+    
+    orig_len_cates = len(cat_priority.keys())
+    
+    for i in range(len(cat_priority.keys())):
+        if cat_priority[i] in cates:
+            cates.append(cat_priority[i])
+
+    cates = cates[orig_len_cates-1:]
+
 
     ### Build tree structure as result.
     result = {}
@@ -307,7 +330,7 @@ def get_dot_attr_structure(g_type):
             result[c][g] = group_dict[g]
         ### Don't forget the 'cate_name_None' group.
         result[c][None] = group_dict[c+"_None"]
-        
+    
     return cates, groups, result
 
 def __test_get_structure(g_type):

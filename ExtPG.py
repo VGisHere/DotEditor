@@ -1,6 +1,6 @@
 # coding=utf8
 '''
-Copyright (R) 2015 Vincent.H <forever.h@gmail.com>
+Copyright (R) 2021 Vaibhav.Gilhotra <spaceholder_email>
 
 Published under Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0.html).
 -------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ import wx.propgrid as wxpg
 import AttrsDef
 import wx, types, colour
 import re
-from DEUtils import remove_double_quote, get_colors_in_schcme
+from DEUtils import remove_double_quote, get_colors_in_scheme
 from UIClass import ImageSingleChoiceDialog, ArrowTypeDialog, \
                     ColorSingleChoiceDialog, ColorSchemeDialog, \
                     DialogTextEditor
@@ -63,14 +63,14 @@ class CSDialog(ColorSchemeDialog):
         
         # Change dialog size to fit the image size.        
         w, h = il.GetBitmap(0).GetSize()
-        if os.sys.platform == 'win32':
-            self.SetSizeWH(int(w*4.5), h*4)
+        if os.sys.platform in ['win32', 'win64']:
+            self.SetSize(int(w*4.5), h*4)
         elif os.sys.platform == 'darwin':
-            self.SetSizeWH(int(w*4.5), h*5)
+            self.SetSize(int(w*4.5), h*5)
         elif os.sys.platform[:5] == 'linux':
-            self.SetSizeWH(int(w*5), h*5.5)
+            self.SetSize(int(w*5), h*5.5)
         else:
-            self.SetSizeWH(int(w*5), h*5)
+            self.SetSize(int(w*5), h*5)
             
         self.updateList()
         
@@ -92,7 +92,7 @@ class CSDialog(ColorSchemeDialog):
         s_text = self.m_searchCtrl.GetValue()
         scheme_list = self.choice
         
-        search_result = filter(lambda s:s.find(s_text) > -1, scheme_list)
+        search_result = list(filter(lambda s:s.find(s_text) > -1, scheme_list))
         self.updateList(search_result)
     
     def GetColorScheme(self):
@@ -112,7 +112,7 @@ class CSDialog(ColorSchemeDialog):
         for x in range(len(scheme_list)):
             c = scheme_list[x]
             img_idx = all_scheme.index(c)
-            self.m_list.InsertImageStringItem(x, c, img_idx)
+            self.m_list.InsertItem(x, c, img_idx)
             
         return
 
@@ -132,7 +132,7 @@ class CSCDialog(ColorSingleChoiceDialog):
         self.SetTitle('Pick a color')
         self.m_staticText_message.SetLabel('Select a color in "%s":'%scheme)
         
-        self.choice = get_colors_in_schcme(scheme)
+        self.choice = get_colors_in_scheme(scheme)
         
         self.updateList()
         
@@ -149,10 +149,10 @@ class CSCDialog(ColorSingleChoiceDialog):
     
     def onSearch(self, event):
         s_text = self.m_searchCtrl.GetValue()
-        color_list = self.choice.keys()
-        color_list.sort()
+        color_list = sorted(self.choice.keys())
+        # color_list.sort()
         
-        search_result = filter(lambda s:s.find(s_text) > -1, color_list)
+        search_result = list(filter(lambda s:s.find(s_text) > -1, color_list))
         self.updateList(search_result)
     
     def GetColorString(self):
@@ -165,8 +165,8 @@ class CSCDialog(ColorSingleChoiceDialog):
     def updateList(self, color_list=None):
         
         if color_list is None:
-            color_list = self.choice.keys()
-            color_list.sort()
+            color_list = sorted(self.choice.keys())
+            # color_list.sort()
         
         self.m_list.ClearAll()
         self.m_list.InsertColumn(0, 'COLOR NAME')
@@ -174,7 +174,7 @@ class CSCDialog(ColorSingleChoiceDialog):
         self.m_list.SetColumnWidth(0, w*0.92)
         for x in range(len(color_list)):
             c = color_list[x]
-            self.m_list.InsertStringItem(x, c)
+            self.m_list.InsertItem(x, c)
             r,g,b = self.choice[c]
             v = max(r,g,b)/255.0
             if v < 0.5:
@@ -217,18 +217,18 @@ class NodeShapeDialog(ImageSingleChoiceDialog):
 
         # Change dialog size to fit the image size.        
         w, h = il.GetBitmap(0).GetSize()
-        if os.sys.platform == 'win32':
-            self.SetSizeWH(int(w*6), h*6)
+        if os.sys.platform in ['win32', 'win64']:
+            self.SetSize(int(w*4.5), h*4)
         elif os.sys.platform == 'darwin':
-            self.SetSizeWH(int(w*6), h*5)
+            self.SetSize(int(w*6), h*5)
         elif os.sys.platform[:5] == 'linux':
-            self.SetSizeWH(int(w*4.5), h*4)
+            self.SetSize(int(w*4.5), h*4)
         else:
-            self.SetSizeWH(int(w*6), h*6)
+            self.SetSize(int(w*4.5), h*4)
         
         for x in range(len(self.choices)):
             c = self.choices[x]
-            self.m_list.InsertImageStringItem(x, c, x)
+            self.m_list.InsertItem(x, c, x)
         
         self.m_list.Bind(wx.EVT_LEFT_DCLICK, self.onOK)
         
@@ -278,19 +278,20 @@ class ATDialog(ArrowTypeDialog):
 
         # Change dialog size to fit the image size.        
         w, h = il.GetBitmap(0).GetSize()
-        if os.sys.platform == 'win32':
-            self.SetSizeWH(int(w*9), h*6.5)
+        if os.sys.platform in ['win32', 'win64']:
+            self.SetSize(int(w*7), h*6.5)
         elif os.sys.platform == 'darwin':
-            self.SetSizeWH(int(w*7), h*6.5)
+            self.SetSize(int(w*7), h*6.5)
         else:
-            self.SetSizeWH(int(w*9), h*6.5)
+            self.SetSize(int(w*7), h*6.5)
         
         
         for x in range(len(self.base_at_list )):
             c = self.base_at_list[x]
-            self.m_list.InsertImageStringItem(x, c, x)
+            self.m_list.InsertItem(x, c, x)
         
         self.m_list.Bind(wx.EVT_LEFT_DCLICK, self.onOK)
+        self.refresh_preview()
 
     def getArrowType(self):
         
@@ -378,13 +379,13 @@ class ATDialog(ArrowTypeDialog):
         
         # Gen image.
         at = self.getArrowType()
-        fn = tempfile.gettempdir()+'/.atpreview'
+        fn = tempfile.gettempdir()+'/atpreview.png'
         DEUtils.gen_arrow_image(at, fn)
         img = wx.Image(fn)
         
         # Cut the center part for preview. 
         w,h=img.GetSize()
-        #img = img.GetSubImage(wx.Rect((w-h)/2, 0, h, h))
+        # img = img.GetSubImage(wx.Rect((w-h)/2, 0, w, h))
         
         self.m_bitmap_preview.SetSize((w,h))
         self.m_bitmap_preview.SetBitmap(img.ConvertToBitmap())
@@ -400,12 +401,12 @@ class ATDialog(ArrowTypeDialog):
         self.EndModal(wx.ID_OK)
 
 
-class DotStringProperty(wxpg.PyProperty):
+class DotStringProperty(wxpg.PGProperty):
     '''
     Why this? This class existed because the build-in wxpg.PyStringProperty not trigger event when zero-length string input. 
     '''
-    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=''):
-        wxpg.PyProperty.__init__(self, label, name)
+    def __init__(self, label, name=wxpg.PG_LABEL, value=''):
+        wxpg.PGProperty.__init__(self, label, name)
         self.SetValue(value)
         
     def GetClassName(self):
@@ -415,7 +416,10 @@ class DotStringProperty(wxpg.PyProperty):
         return 'TextCtrl'
     
     def ValueToString(self, v, flags):
-        return v
+        if len(v):
+            return str(v.strip())
+        else:
+            return ''
 
     def StringToValue(self, s, flags):
         return True, s
@@ -423,7 +427,12 @@ class DotStringProperty(wxpg.PyProperty):
     def ValidateValue(self, value, validationInfo):
         """ Let's limit the value NOT inclue double-quote.
         """
-        return True, DEUtils.escape_dot_string(value)
+        
+        if type(DEUtils.escape_dot_string(value)) == str:
+            return True
+        else:
+            return False
+
 
 class DotBigStringProperty(DotStringProperty):
     '''
@@ -439,12 +448,12 @@ class DotBigStringProperty(DotStringProperty):
         
         ok = False
         
-        if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
+        if event.GetEventType() in [wx.wxEVT_BUTTON, wx.wxEVT_LEFT_UP, wx.wxEVT_RIGHT_UP]:
 
             dlg = DialogTextEditor(propgrid)
             dlg.SetTitle('Input the label text')
-            
-            text = self.GetValue()
+
+            text = self.GetValueAsString()
             dlg.m_text.SetValue(text)
     
             if dlg.ShowModal() == wx.ID_OK:
@@ -452,27 +461,34 @@ class DotBigStringProperty(DotStringProperty):
                 self.m_value = text
                 self.SetValueInEvent(text)
                 ok = True
-                
+            
+            elif dlg.ShowModal() in [wx.ID_CANCEL, wx.ID_EXIT]:
+                self.m_value = None
+            
+        
         return ok
 
-class DotFloatProperty(wxpg.PyFloatProperty):
+
+class DotFloatProperty(wxpg.FloatProperty):
     
     def ValueToString(self, v, flags):
-        c_str = str(v)
-        ### If no decimal point, add .0
-        if c_str.isdigit():
-            c_str += '.0'
-        return c_str
+        if len(v):
+            c_str = str(v.strip().lower())
+            ### If no decimal point, add .0
+            if c_str.isdigit():
+                c_str += '.0'
+            return c_str
+        else:
+            return ''
     
-    def DoGetValue(self):
-        
-        return self.ValueToString(self.m_value, None)
+    # def DoGetValue(self):
+    #     return self.ValueToString(self.m_value, None)
 
-class DotColorSchemeProperty(wxpg.PyProperty):
-    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=''):
-        wxpg.PyProperty.__init__(self, label, name)
-        self.SetValue(value)
+class DotColorSchemeProperty(wxpg.PGProperty):
+    def __init__(self, label, name=wxpg.PG_LABEL, value=''):
+        wxpg.PGProperty.__init__(self, label, name)
         self.choices = AttrsDef.E_COLORSCHEME
+        self.SetValue(value)
     
     def GetClassName(self):
         return 'DotColorSchemeProperty'
@@ -488,35 +504,42 @@ class DotColorSchemeProperty(wxpg.PyProperty):
         return False
 
     def ValueToString(self, v, flags):
-        return v.strip().lower()
+        if len(v):
+            return str(v.strip().lower())
+        else:
+            return ''
     
     def OnEvent(self, propgrid, primaryEditor, event):
         
         ok = False
         
-        if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
+        if event.GetEventType() in [wx.wxEVT_BUTTON, wx.wxEVT_LEFT_UP, wx.wxEVT_RIGHT_UP]:
 
             dlg = CSDialog.get_dialog(propgrid)
-            if isinstance(self.m_value, basestring):
-                dlg.SetColorScheme(self.m_value)
     
             if dlg.ShowModal() == wx.ID_OK:
                 cs = dlg.GetColorScheme()
                 self.m_value = cs
                 self.SetValueInEvent(cs)
                 ok = True
-                
+            
+            elif dlg.ShowModal() in [wx.ID_CANCEL, wx.ID_EXIT]:
+                self.m_value = None
+            
+            if isinstance(self.m_value, str):
+                dlg.SetColorScheme(self.m_value)
+            
         return ok
 
-class DotColorProperty(wxpg.PyProperty):
+class DotColorProperty(wxpg.PGProperty):
     '''The value of pg should be 3 type:
         1. A color name in string.
         2. A RGB/RGBA value in tuple(r,g,b in 0~255).
         3. A int to point out the index in colorscheme. 
     '''
 
-    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=''):
-        wxpg.PyProperty.__init__(self, label, name)
+    def __init__(self, label, name=wxpg.PG_LABEL, value=''):
+        wxpg.PGProperty.__init__(self, label, name)
         self.SetValue(value)
     
     def GetClassName(self):
@@ -528,6 +551,7 @@ class DotColorProperty(wxpg.PyProperty):
     def StringToValue(self, s, flags):
         
         s = remove_double_quote(s).strip()
+
         # For emtpy value.
         if s == '': 
             return True, None
@@ -546,6 +570,7 @@ class DotColorProperty(wxpg.PyProperty):
                     return False
             except:
                 return False
+        
         # Try to parse HSV string.
         elif s[0].isdigit() or s[0] == '.': # Try to parse numbers
             try:
@@ -565,22 +590,23 @@ class DotColorProperty(wxpg.PyProperty):
             if scheme is None:
                 return True, s
             
-            colors = get_colors_in_schcme(scheme).keys()
-            if s.lower() not in colors:
+            colors = get_colors_in_scheme(scheme).keys()
+            
+            if s.strip() not in colors:
                 return False
             
-            return True, s
+            return True, get_colors_in_scheme(scheme)[s]
 
     def ValueToString(self, value, flags):
 
-        if value is None:
+        if value is None or len(value) == 0:
             return ''
         
-        if isinstance(value, basestring):
-            return value
-        elif isinstance(value, types.IntType):
-            return str(value)
-        elif isinstance(value, types.TupleType):
+        if isinstance(value, str):
+            return str(value.strip().lower())
+        elif isinstance(value, int):
+            return str(value.strip().lower())
+        elif isinstance(value, tuple):
             if len(value) == 3:
                 return '#%02x%02x%02x'%value
             elif len(value) == 4:
@@ -604,36 +630,38 @@ class DotColorProperty(wxpg.PyProperty):
         return scheme
 
     def OnEvent(self, propgrid, primaryEditor, event):
-        if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
+        if event.GetEventType() in [wx.wxEVT_BUTTON, wx.wxEVT_LEFT_UP, wx.wxEVT_RIGHT_UP]:
 
             scheme = self.__get_current_scheme()
             if scheme is None:
                 scheme = 'x11'
             
             dlg = CSCDialog(propgrid, scheme)
-            if isinstance(self.m_value, basestring):
-                dlg.SetColorString(self.m_value)
-    
+
             if dlg.ShowModal() == wx.ID_OK:
                 color = dlg.GetColorString()
                 self.m_value = color
                 self.SetValueInEvent(color)
                 return True
             
+            elif dlg.ShowModal() in [wx.ID_CANCEL, wx.ID_EXIT]:
+                self.m_value = None
+            
+            if isinstance(self.m_value, str):
+                dlg.SetColorString(self.m_value)
+            
         return False    
     
     def SetChoices(self, choices):
         self.choices = choices
         
-    def DoGetValue(self):
-        c_str = self.ValueToString(self.m_value, None)
-         
-        return c_str 
+    # def DoGetValue(self):
+    #     return self.ValueToString(self.m_value, None)
 
-class DotEnumProperty(wxpg.PyProperty):
+class DotEnumProperty(wxpg.PGProperty):
     
-    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=''):
-        wxpg.PyProperty.__init__(self, label, name)
+    def __init__(self, label, name=wxpg.PG_LABEL, value=''):
+        wxpg.PGProperty.__init__(self, label, name)
         self.SetValue(value)
     
     def GetClassName(self):
@@ -643,20 +671,25 @@ class DotEnumProperty(wxpg.PyProperty):
         return "ComboBox"
 
     def StringToValue(self, s, flags):
-
-        if s == '' or s in self.GetChoices().GetLabels():
+        if s == '' or (s in self.GetChoices().GetLabels()) or (s.upper() in self.GetChoices().GetLabels()) or (s.lower() in self.GetChoices().GetLabels()):
             return True, s
         else:
             return False
          
     def ValueToString(self, value, flags):
+        try:
+            if len(value):
+                return str(value.strip())
+            else:
+                return ''
+        except:
+            print("Error Line 655 for value - ",value,type(value))
 
-        return str(value)
 
-class DotEnumCombineProperty(wxpg.PyProperty):
+class DotEnumCombineProperty(wxpg.PGProperty):
     
-    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=''):
-        wxpg.PyProperty.__init__(self, label, name)
+    def __init__(self, label, name=wxpg.PG_LABEL, value=''):
+        wxpg.PGProperty.__init__(self, label, name)
         self.SetValue(value)
         
     def GetClassName(self):
@@ -666,26 +699,35 @@ class DotEnumCombineProperty(wxpg.PyProperty):
         return "TextCtrlAndButton"
 
     def OnEvent(self, propgrid, primaryEditor, event):
-        if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
-            dlg = wx.MultiChoiceDialog(propgrid,'Check all wanted %ss below:'%self.GetLabel(),'Make Choices',self.choices)
-            if len(self.m_value.strip()) > 0:
-                sels = [ self.choices.index(x.strip()) for x in self.m_value.split(',') ]
-                dlg.SetSelections(sels)
-                
+        
+        if event.GetEventType() in [wx.wxEVT_BUTTON, wx.wxEVT_LEFT_UP, wx.wxEVT_RIGHT_UP]:
+            
+            dlg = wx.MultiChoiceDialog(propgrid, message='Check all wanted %ss below:'%self.GetLabel(),
+                                        caption='Make Choices', choices=self.choices.GetLabels())
+
             if dlg.ShowModal() == wx.ID_OK:
                 sels = dlg.GetSelections()
+                v = ''
                 if len(sels) == 0:
                     self.m_value = ''
-                    return True
-                v = ''
-                for idx in sels:
-                    v += self.choices[idx] +', '
-                v = v[:-2]
+                    # return True
+                else:
+                    for idx in sels:
+                        v += self.choices.GetLabels()[idx] +', '
+                    v = v[:-2]
 
                 self.m_value = v
                 self.SetValueInEvent(v)
                 return True
             
+            elif dlg.ShowModal() in [wx.ID_CANCEL, wx.ID_EXIT]:
+                self.m_value = None
+            
+            if self.m_value:
+                if len(self.m_value.strip()) > 0:
+                    sels = [ self.choices.index(x.strip()) for x in self.m_value.split(',') ]
+                    dlg.SetSelections(sels)
+                
         return False    
         
     def SetChoices(self, choices):
@@ -699,21 +741,79 @@ class DotEnumCombineProperty(wxpg.PyProperty):
     
         styles = s.split(',')
         for sty in styles:
-            if sty.strip() not in self.choices:
+            if sty.strip() not in self.choices.GetLabels():
                 return False
         
         return True, s
     
     def ValueToString(self, value, flags):
+        if len(value):
+            return str(value.strip().lower())
+        else:
+            return ''
 
-        return str(value)
 
-class DotEnumNodeShapeProperty(wxpg.PyProperty):
+class DotEnumChoiceProperty(wxpg.PGProperty):
     
-    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=''):
-        wxpg.PyProperty.__init__(self, label, name)
+    def __init__(self, label, name=wxpg.PG_LABEL, value=''):
+        wxpg.PGProperty.__init__(self, label, name)
         self.SetValue(value)
+        
+    def GetClassName(self):
+        return 'DotEnumChoiceProperty'
+    
+    def GetEditor(self):
+        return "TextCtrlAndButton"
+
+    def OnEvent(self, propgrid, primaryEditor, event):
+        
+        if event.GetEventType() in [wx.wxEVT_BUTTON, wx.wxEVT_LEFT_UP, wx.wxEVT_RIGHT_UP]:
+            
+            dlg = wx.SingleChoiceDialog(propgrid, message='Check wanted %s below:'%self.GetLabel(),
+                                        caption='Make Choice', choices=self.choices.GetLabels())
+
+            if dlg.ShowModal() == wx.ID_OK:
+                sels = dlg.GetSelection()
+                v = self.choices.GetLabels()[sels]
+                self.m_value = v
+                self.SetValueInEvent(v)
+                return True
+            
+            elif dlg.ShowModal() in [wx.ID_CANCEL, wx.ID_EXIT]:
+                self.m_value = None
+            
+            if self.m_value:
+                dlg.SetSelection(self.m_value.strip())
+                
+        return False
+        
+    def SetChoices(self, choices):
+        self.choices = choices
+
+    def StringToValue(self, s, flags):
+        
+        s = s.strip()
+        if s == '':
+            return True, s
+    
+        if s.strip() not in self.choices.GetLabels():
+                return False
+        
+        return True, s
+    
+    def ValueToString(self, value, flags):
+        if len(value):
+            return str(value.strip().lower())
+        else:
+            return ''
+
+
+class DotEnumNodeShapeProperty(wxpg.PGProperty):
+    
+    def __init__(self, label, name=wxpg.PG_LABEL, value=''):
+        wxpg.PGProperty.__init__(self, label, name)
         self.choices = AttrsDef.E_SHAPE
+        self.SetValue(value)
         
     def GetClassName(self):
         return 'DotEnumNodeShapeProperty'
@@ -722,17 +822,21 @@ class DotEnumNodeShapeProperty(wxpg.PyProperty):
         return "TextCtrlAndButton"
 
     def OnEvent(self, propgrid, primaryEditor, event):
-        if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
+        if event.GetEventType() in [wx.wxEVT_BUTTON, wx.wxEVT_LEFT_UP, wx.wxEVT_RIGHT_UP]:
             dlg = NodeShapeDialog.get_dialog(propgrid)
-            # Set the current value.
-            if self.m_value:
-                dlg.SetSelectedString(self.m_value)
             
             if dlg.ShowModal() == wx.ID_OK:
                 v = dlg.GetSelectedString()
                 self.m_value = v
                 self.SetValueInEvent(v)
                 return True
+            
+            elif dlg.ShowModal() in [wx.ID_CANCEL, wx.ID_EXIT]:
+                self.m_value = None
+            
+            # Set the current value.
+            if self.m_value:
+                dlg.SetSelectedString(self.m_value)
             
         return False    
 
@@ -749,12 +853,16 @@ class DotEnumNodeShapeProperty(wxpg.PyProperty):
     
     def ValueToString(self, value, flags):
 
-        return str(value)
+        if len(value):
+            return str(value.strip().lower())
+        else:
+            return ''
     
-class DotEnumArrowTypeProperty(wxpg.PyProperty):
+
+class DotEnumArrowTypeProperty(wxpg.PGProperty):
     
-    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=''):
-        wxpg.PyProperty.__init__(self, label, name)
+    def __init__(self, label, name=wxpg.PG_LABEL, value=''):
+        wxpg.PGProperty.__init__(self, label, name)
         self.SetValue(value)
         
     def GetClassName(self):
@@ -764,18 +872,22 @@ class DotEnumArrowTypeProperty(wxpg.PyProperty):
         return "TextCtrlAndButton"
 
     def OnEvent(self, propgrid, primaryEditor, event):
-        if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
+        if event.GetEventType() in [wx.wxEVT_BUTTON, wx.wxEVT_LEFT_UP, wx.wxEVT_RIGHT_UP]:
             
             dlg = ATDialog.get_dialog(propgrid)
-            # Show the current arrow_type in m_value.
-            if self.m_value:
-                dlg.setArrayType(self.m_value)
             
             if dlg.ShowModal() == wx.ID_OK:
                 v = dlg.getArrowType()
                 self.m_value = v
                 self.SetValueInEvent(v)
                 return True
+            
+            elif dlg.ShowModal() in [wx.ID_CANCEL, wx.ID_EXIT]:
+                self.m_value = None
+            
+            # Show the current arrow_type in m_value.
+            if self.m_value:
+                dlg.setArrayType(self.m_value)
             
         return False    
 
@@ -790,9 +902,13 @@ class DotEnumArrowTypeProperty(wxpg.PyProperty):
             return True, s
     
     def ValueToString(self, value, flags):
-        return str(value)
+        if len(value):
+            return str(value.strip().lower())
+        else:
+            return ''
 
-class DotEditEnumProperty(wxpg.PyStringProperty):
+
+class DotEditEnumProperty(wxpg.StringProperty):
     
     def GetEditor(self):
         return "ComboBox"
@@ -805,6 +921,7 @@ map_type2class = {'string':         DotStringProperty,
                   'color':          DotColorProperty,
                   'colorscheme':    DotColorSchemeProperty,
                   'enum':           DotEnumProperty,
+                  'enum_choice':    DotEnumChoiceProperty,
                   'enum_edit':      DotEditEnumProperty,
                   'enum_combine':   DotEnumCombineProperty,
                   'enum_nodeshape': DotEnumNodeShapeProperty,
@@ -819,12 +936,14 @@ def buildPG(attr_name, g_type):
     pg_class = map_type2class[info['type']]
     
     pg_item = pg_class(attr_name)
+    if info['type'] in ['enum', 'enum_edit', 'enum_combine', 'enum_choice']:
+        try:
+            pg_item.SetChoices(wx.propgrid.PGChoices(info['param']))
+        except:
+            print("Error Line 827 - Set Choices Param:{}\tType:{}\tAttr-{}".format(info['param'],info['type'],attr_name))
     
-    if info['type'] in ['enum', 'enum_edit', 'enum_combine']:
-        pg_item.SetChoices(info['param'])
-    
-    #elif info['type'] == 'bool':
-    #    pg_item.SetEditor('CheckBox')
+    elif info['type'] == 'bool':
+       pg_item.SetEditor('CheckBox')
     
     elif info['type'] == 'img_file':
         pg_item.SetAttribute(wxpg.PG_FILE_WILDCARD, 
@@ -833,8 +952,9 @@ def buildPG(attr_name, g_type):
                              "|Gif File (*.gif)|*.gif")
     
     v = info['default_value']
+    
     if v is None:
-        pg_item.SetDefaultValue('')
+        pg_item.SetDefaultValue(None)
     else:
         if info['type'] == 'bool':
             bv = False
@@ -842,9 +962,11 @@ def buildPG(attr_name, g_type):
                 bv = True
             pg_item.SetDefaultValue(bv)
             pg_item.SetValue(bv)
+        
         else:
             pg_item.SetDefaultValue(str(v).strip())
-            pg_item.SetValueFromString(str(v))
+            pg_item.SetValue(str(v))
+            
 
     pg_item.SetHelpString(info['description'])
     

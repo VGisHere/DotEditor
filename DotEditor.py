@@ -1,6 +1,6 @@
 # coding=utf8
 '''
-Copyright (R) 2015 Vincent.H <forever.h@gmail.com>
+Copyright (R) 2021 Vaibhav.Gilhotra <spaceholder_email>
 
 Published under Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0.html).
 -------------------------------------------------------------------------------------
@@ -25,7 +25,7 @@ from DotScriptEditor import DS
 import ExtParser
 import AttrsDef
 import ExtPG
-from __builtin__ import isinstance
+from builtins import isinstance
 from DEUtils import add_double_quote, to_unicode, remove_double_quote ,\
                     normalize_imglist, get_image_resource, resource_path,\
                     escape_dot_string
@@ -54,7 +54,7 @@ class DH(DialogHelp):
     
     def change_help_topic(self, help_topic):
         
-        help_topic = help_topic.strip().lower()
+        help_topic = help_topic.strip()
         self.SetTitle('DotEditor Help - %s'%help_topic.capitalize())
         self.update_graph( ExtGraph.ExtGraph(template_file=resource_path('resource/help/%s.dot'%help_topic)) )
     
@@ -109,30 +109,76 @@ class DA(DialogAppend):
             endpoints.add(s); endpoints.add(d)
         
         ### Generate suggestion when Appending Node.
-        if self.m_radioBox_type.GetSelection() == 0:
+        if self.m_radioBox_type.GetSelection() in [0,3]:
             # All end node but the stand-alone one.
             s_n = list(endpoints - set(nodes))
         
         ### Generate suggestion when Appending Edge.
         else:
             # Get all node name in graph. Include all end-nodes in edges. 
-            s_n = list( set(nodes).union(endpoints) )
+            s_n = sorted(list( set(nodes).union(endpoints) ))
       
         # Save the value in old_v.
         old_v = self.m_comboBox_nodeA.GetValue()
         self.m_comboBox_nodeA.Clear()
-        s_n.sort()
+        # s_n.sort()
         for n in s_n:
-            self.m_comboBox_nodeA.Append(n.decode('utf8'))
+            self.m_comboBox_nodeA.Append(n)
         
         # Restore the nodeA value.
         self.m_comboBox_nodeA.SetValue(old_v)
         
         return
     
+    def __refresh_comboBox_style(self):
+        from AttrsDef import E_SHAPE_MIN, E_STYLE_MIN, E_EDGE_TYPE_MIN, E_EDGE_STYLE_MIN
+        
+        if self.m_radioBox_type.GetSelection() in [0,1]:
+            self.m_comboBox_style.Enable()
+
+        if self.m_radioBox_type.GetSelection() == 0 : #Node
+            self.m_comboBox_style.Clear()
+            for val in E_STYLE_MIN:
+                self.m_comboBox_style.Append(val)
+            self.m_comboBox_style.SetValue(E_STYLE_MIN[0])
+        
+        elif self.m_radioBox_type.GetSelection() == 1 : #Edge
+            self.m_comboBox_style.Clear()
+            for val in E_EDGE_STYLE_MIN:
+                self.m_comboBox_style.Append(val)
+            self.m_comboBox_style.SetValue(E_EDGE_STYLE_MIN[0])
+        
+        else:
+            self.m_comboBox_style.Clear()
+            self.m_comboBox_style.Disable()
+
+
+    def __refresh_comboBox_shape(self):
+        from AttrsDef import E_SHAPE_MIN, E_STYLE_MIN, E_EDGE_TYPE_MIN, E_EDGE_STYLE_MIN
+        
+        if self.m_radioBox_type.GetSelection() in [0,1]:
+            self.m_comboBox_shape.Enable()
+
+        if self.m_radioBox_type.GetSelection() == 0 : #Node
+            self.m_comboBox_shape.Clear()
+            for val in E_SHAPE_MIN:
+                self.m_comboBox_shape.Append(val)
+            self.m_comboBox_shape.SetValue(E_SHAPE_MIN[0])
+        
+        elif self.m_radioBox_type.GetSelection() == 1 : #Edge
+            self.m_comboBox_shape.Clear()
+            for val in E_EDGE_TYPE_MIN:
+                self.m_comboBox_shape.Append(val)
+            self.m_comboBox_shape.SetValue(E_EDGE_TYPE_MIN[0])
+        
+        else:
+            self.m_comboBox_shape.Clear()
+            self.m_comboBox_shape.Disable()
+
+
     def __refresh_comboBoxB_suggestion(self):
         '''Refresh comboxB, filled it with suggested node name, based on the value of comboxA.'''
-        if self.m_radioBox_type.GetSelection() != 1:
+        if self.m_radioBox_type.GetSelection() not in [1,3]:
             self.m_comboBox_nodeB.Clear()
             return
             
@@ -142,7 +188,7 @@ class DA(DialogAppend):
         for s, d in edges:
             endpoints.add(s); endpoints.add(d)
         
-        nA = self.m_comboBox_nodeA.GetValue().strip().encode('utf8')
+        nA = self.m_comboBox_nodeA.GetValue().strip()
         
         # Get all node's name.
         s_n = set(nodes).union(endpoints)  
@@ -152,13 +198,14 @@ class DA(DialogAppend):
                 invalid_points.add(d)
                      
         s_n = s_n - invalid_points 
-        s_n = list(s_n); s_n.sort()
+        s_n = sorted(list(s_n))
+        # s_n.sort()
         
         # Save the value in old_v.
         old_v = self.m_comboBox_nodeB.GetValue()
         self.m_comboBox_nodeB.Clear()
         for n in s_n:
-            self.m_comboBox_nodeB.Append(n.decode('utf8'))
+            self.m_comboBox_nodeB.Append(n)
         
         # Restore the nodeA value.
         self.m_comboBox_nodeB.SetValue(old_v)
@@ -168,15 +215,19 @@ class DA(DialogAppend):
     def getAppendValue(self):
         '''If "append node" checked, return node in string; else return nodes in tuple.'''
         vCheck = self.m_radioBox_type.GetSelection()
-        vA = remove_double_quote( self.m_comboBox_nodeA.GetValue().encode('utf8') )
-        vB = remove_double_quote( self.m_comboBox_nodeB.GetValue().encode('utf8') )
+        vA = remove_double_quote( self.m_comboBox_nodeA.GetValue() )
+        vB = remove_double_quote( self.m_comboBox_nodeB.GetValue() )
+        sH = self.m_comboBox_shape.GetValue()
+        sT = self.m_comboBox_style.GetValue()
         
         if vCheck == 0:
-            return 'node', escape_dot_string(vA)
+            return 'node', escape_dot_string(vA) , (sH, sT)
         elif vCheck == 1:
-            return 'edge', (escape_dot_string(vA), escape_dot_string(vB))
-        else:
+            return 'edge', (escape_dot_string(vA), escape_dot_string(vB)) , (sH, sT)
+        elif vCheck == 2:
             return 'subgraph', escape_dot_string(vA)
+        elif vCheck == 3:
+            return 'samerank', (escape_dot_string(vA), escape_dot_string(vB))
     
     def onTypeChange(self, event):
         '''Refresh both combox when the value of append_type_checkbox changed.'''
@@ -186,22 +237,40 @@ class DA(DialogAppend):
             self.m_comboBox_nodeB.Disable()
             self.__refresh_comboBoxA_suggestion()
             self.__refresh_comboBoxB_suggestion()
+            
+            self.__refresh_comboBox_style()
+            self.__refresh_comboBox_shape()
+
         elif checked == 1: # Case Edge.
             self.m_comboBox_nodeB.Enable()
             self.__refresh_comboBoxA_suggestion()
             self.__refresh_comboBoxB_suggestion()
-        else: # Case Subgraph
+
+            self.__refresh_comboBox_style()
+            self.__refresh_comboBox_shape()
+
+        elif checked == 2: # Case Subgraph
             self.m_comboBox_nodeB.Disable()
+            
+            self.__refresh_comboBox_style()
+            self.__refresh_comboBox_shape()
             
             self.m_comboBox_nodeA.Clear()
             self.m_comboBox_nodeA.SetValue('clusterN')
             self.m_comboBox_nodeA.SetFocus()
-            self.m_comboBox_nodeA.SetMark(7, -1)
+            self.m_comboBox_nodeA.SetTextSelection(7, -1)
+        
+        elif checked == 3: #Case SameRank
+            self.m_comboBox_nodeB.Enable()
+            self.__refresh_comboBoxA_suggestion()
+            self.__refresh_comboBoxB_suggestion()
+            self.__refresh_comboBox_style()
+            self.__refresh_comboBox_shape()
         
     def onNodeAChanged(self, event):
         '''Refill comboxB when value of combox changed.'''
         checked = self.m_radioBox_type.GetSelection() 
-        if checked == 1:
+        if checked in [1,3]:
             self.__refresh_comboBoxB_suggestion()
         
     def OnOK(self, event):
@@ -235,7 +304,7 @@ class DGS(DialogGraphSetting):
         else:
             self.m_radioBox_type.SetSelection(0)
             
-        self.m_textCtrl_name.SetValue(g.get_name().strip().decode('utf8'))
+        self.m_textCtrl_name.SetValue(g.get_name().strip())
         
         self.m_choice_layout_cmd.Clear()
         self.m_choice_layout_cmd.AppendItems(G_CMDS)
@@ -247,7 +316,7 @@ class MF(MainFrame):
     is_data_changed = False
     file_path = None
     help_window = None
-    bitmap_zoom_ratio = 1.0
+    bitmap_zoom_ratio = 0.75
     MAX_ZOOM = 1.2
     __zoom_cache = (bitmap_zoom_ratio, None, None)
     is_dragging = False
@@ -256,10 +325,10 @@ class MF(MainFrame):
         MainFrame.__init__(self, parent)
         
         # Set icon of buttons. (Cause of the resource path problem in pyinstaller~~~)
-        for btn_name in ['new', 'open', 'save', 'export', 'script', 'add', 'minus', 'graphsetting', 'help']:
+        for btn_name in ['new', 'open', 'save', 'export', 'script', 'add', 'minus', 'graphsetting', 'help', 'copy']:
             set_s = 'self.m_bpButton_%s.SetBitmap( wx.Bitmap( resource_path("resource/icon/%s.png"), wx.BITMAP_TYPE_ANY ) )' 
             eval(set_s%(btn_name,btn_name))
-            set_s = 'self.m_bpButton_%s.SetBitmapHover( wx.Bitmap( resource_path("resource/icon/%s-highlight.png"), wx.BITMAP_TYPE_ANY ) )' 
+            set_s = 'self.m_bpButton_%s.SetBitmapCurrent( wx.Bitmap( resource_path("resource/icon/%s-highlight.png"), wx.BITMAP_TYPE_ANY ) )' 
             eval(set_s%(btn_name, btn_name))
         
         # Set icon.
@@ -276,12 +345,12 @@ class MF(MainFrame):
                 help_list.append(hf[:-4])
         
         for item in help_list:
-            m_id = wx.NewId()
+            m_id = wx.NewIdRef()
             self.m_menu_help.Append(m_id, item)
             self.m_menu_help.Bind(wx.EVT_MENU, self.onHelpMenu, id=m_id )
             
         self.m_menu_help.AppendSeparator()
-        m_id = wx.NewId()
+        m_id = wx.NewIdRef()
         self.m_menu_help.Append(m_id, '&About')
         self.m_menu_help.Bind(wx.EVT_MENU, self.onAbout, id=m_id )
     
@@ -291,7 +360,7 @@ class MF(MainFrame):
         for icon_name in ['node-color', 'node-gray', 'edge-color', \
                           'edge-gray', 'graph-color', 'graph-gray', \
                           'graph-expand']:
-            img = wx.EmptyBitmap(16,16)
+            img = wx.Bitmap(16,16)
             fn = resource_path('resource/icon/%s.png'%icon_name)
             img.LoadFile(fn, wx.BITMAP_TYPE_PNG)
             img_idx = iList.Add(img)
@@ -328,6 +397,7 @@ class MF(MainFrame):
                                              (wx.ACCEL_CTRL, ord('e'), self.m_bpButton_export.GetId()),
                                              (wx.ACCEL_ALT, ord('a'), self.m_bpButton_add.GetId()), 
                                              (wx.ACCEL_ALT, ord('d'), self.m_bpButton_minus.GetId()),
+                                             (wx.ACCEL_ALT, ord('c'), self.m_bpButton_copy.GetId()),
                                              (wx.ACCEL_ALT, ord('g'), self.m_bpButton_graphsetting.GetId()),
                                              ])
         self.SetAcceleratorTable(self.accel_tb)
@@ -348,13 +418,13 @@ class MF(MainFrame):
     def __spread_tree(self, rootid):
         '''A  recursive function to add all data from graph into m_tree_ctrl.'''
         
-        _, graph = self.m_tree.GetItemPyData(rootid)
+        _, graph = self.m_tree.GetItemData(rootid)
         
         ### Add wildcard nodes.
         for n in ['node', 'edge']:
             n_id = self.m_tree.AppendItem(rootid, n)
             n_data = self.data_graph.EG_get_node_by_name(n, root_graph=graph)
-            self.m_tree.SetItemPyData(n_id, ('node',  n_data))
+            self.m_tree.SetItemData(n_id, ('node',  n_data))
             self.m_tree.SetItemImage(n_id, self.img_dict[(n, 'gray')])
         
         ### Load nodes.
@@ -363,24 +433,24 @@ class MF(MainFrame):
             if n_name.lower() in ['node', 'edge']: ### Skip the wildcard node.
                 continue
             
-            n_id = self.m_tree.AppendItem(rootid, n_name.decode('utf8'))
-            self.m_tree.SetItemPyData(n_id, ('node', n))
+            n_id = self.m_tree.AppendItem(rootid, n_name)
+            self.m_tree.SetItemData(n_id, ('node', n))
             self.m_tree.SetItemImage(n_id, self.img_dict[('node', 'color')])
             
         
         ### Load edges.
         for e in graph.get_edges():
-            n1 = remove_double_quote( e.get_source().decode('utf8') )
-            n2 = remove_double_quote( e.get_destination().decode('utf8') )
+            n1 = remove_double_quote( e.get_source() )
+            n2 = remove_double_quote( e.get_destination() )
             n_id = self.m_tree.AppendItem(rootid, "%s -> %s"%(n1,n2))
-            self.m_tree.SetItemPyData(n_id, ('edge', e))
+            self.m_tree.SetItemData(n_id, ('edge', e))
             self.m_tree.SetItemImage(n_id, self.img_dict[('edge', 'color')])
         
         ### Load subgraphs.
         for sg in graph.get_subgraphs():
-            sg_name = remove_double_quote( sg.get_name().decode('utf8') )
+            sg_name = remove_double_quote( sg.get_name() )
             n_id = self.m_tree.AppendItem(rootid, sg_name)
-            self.m_tree.SetItemPyData(n_id, ('graph', sg))
+            self.m_tree.SetItemData(n_id, ('graph', sg))
             self.m_tree.SetItemImage(n_id, self.img_dict[('graph', 'color')])
             self.__spread_tree(n_id)
         
@@ -402,7 +472,12 @@ class MF(MainFrame):
         
         zc = self.__zoom_cache 
         if zc[0] != zoom_ratio or zc[1] is None or zc[2] != bitmap:
-            img = bitmap.ConvertToImage()
+            try:
+                img = bitmap.ConvertToImage()
+            except:
+                self.refresh_bitmap()
+                img = bitmap.ConvertToImage()
+            
             w, h = img.GetSize()
             img = img.Scale(w*zoom_ratio, h*zoom_ratio, wx.IMAGE_QUALITY_HIGH)
             result = img.ConvertToBitmap()
@@ -423,9 +498,9 @@ class MF(MainFrame):
             self.m_pgManager1.Clear()
                     
             ### Insert wildcard item at 1st.
-            g_name = remove_double_quote(self.data_graph.get_name().decode('utf8'))
+            g_name = remove_double_quote(self.data_graph.get_name())
             root = self.m_tree.AddRoot(g_name, 1)
-            self.m_tree.SetItemPyData(root, ('graph', self.data_graph))
+            self.m_tree.SetItemData(root, ('graph', self.data_graph))
             self.m_tree.SetItemImage(root, self.img_dict[('graph', 'color')])
             
             self.__spread_tree(root)
@@ -507,16 +582,16 @@ class MF(MainFrame):
             wd = event.GetWheelRotation()
             zoom_ratio = self.bitmap_zoom_ratio
             if wd > 0:
-                cursor = wx.StockCursor(wx.CURSOR_MAGNIFIER)
+                cursor = wx.Cursor(wx.CURSOR_MAGNIFIER)
                 self.m_panel_paint.SetCursor(cursor)
                 zoom_ratio = self.bitmap_zoom_ratio + 0.05
             elif wd < 0:
-                cursor = wx.StockCursor(wx.CURSOR_MAGNIFIER)
+                cursor = wx.Cursor(wx.CURSOR_MAGNIFIER)
                 self.m_panel_paint.SetCursor(cursor)
                 zoom_ratio = self.bitmap_zoom_ratio - 0.05
                 
             self.changeZoom(zoom_ratio)
-            cursor = wx.StockCursor(wx.CURSOR_DEFAULT)
+            cursor = wx.Cursor(wx.CURSOR_DEFAULT)
             self.m_panel_paint.SetCursor(cursor)
 
         return
@@ -566,12 +641,12 @@ class MF(MainFrame):
         
         self.is_dragging = False
 
-        cursor = wx.StockCursor(wx.CURSOR_DEFAULT)
+        cursor = wx.Cursor(wx.CURSOR_DEFAULT)
         self.SetCursor(cursor)
 
     def onLeftButtonDown(self, event):
         '''Start the drag motion.'''
-        cursor = wx.StockCursor(wx.CURSOR_SIZING)
+        cursor = wx.Cursor(wx.CURSOR_SIZING)
         self.SetCursor(cursor)
 
         self.CurrentCursorPos = event.GetPosition()
@@ -608,8 +683,8 @@ class MF(MainFrame):
             else:
                 g_type = 'graph'
             
-            g_name = dlg.m_textCtrl_name.GetValue().strip().encode('utf8')
-            g_prog = dlg.m_choice_layout_cmd.GetStringSelection().strip().encode('utf8')
+            g_name = dlg.m_textCtrl_name.GetValue().strip()
+            g_prog = dlg.m_choice_layout_cmd.GetStringSelection().strip()
             
             # Update graph settings.
             g = self.data_graph 
@@ -636,62 +711,81 @@ class MF(MainFrame):
             root_graph = i_graph
         else:
             root_id = self.m_tree.GetItemParent(i_id)
-            root_graph = self.m_tree.GetItemPyData(root_id)[1]
+            root_graph = self.m_tree.GetItemData(root_id)[1]
             
         dlg = DA(self)
         r = dlg.ShowModal()
         a_id = None
+        
         if r == wx.ID_OK:
             
-            v = dlg.getAppendValue()            
+            v = dlg.getAppendValue()
             if v[0] == 'node': ### Add node.
                 try:
                     a_data = self.data_graph.EG_append_node(v[1], root_graph=root_graph)
+                    shape_data, style_data = v[2]
+                    shape_data = str(shape_data.strip())
+                    style_data = str(style_data.strip())
+                    
                 except:
-                    wx.MessageBox('Can\'t add item "%s", maybe the same-named item was existed.'%(v[1].decode('utf8')), 
+                    wx.MessageBox('Can\'t add item "%s", maybe the same-named item was existed.'%(v[1]), 
                                   'Found duplicated node name')
                     return
                 
                 ### Add item to tree.
-                a_id = self.m_tree.AppendItem(root_id, v[1].decode('utf8'))
-                self.m_tree.SetItemPyData(a_id, ('node', a_data))
+                a_id = self.m_tree.AppendItem(root_id, v[1])
+                a_data.set('shape', add_double_quote(shape_data))
+                a_data.set('style', add_double_quote(style_data))
+                self.m_tree.SetItemData(a_id, ('node', a_data))
                 self.m_tree.SetItemImage(a_id, self.img_dict[('node', 'color')])
+            
+            
             elif v[0] == 'edge': ### Add edge.
                 n, n1 = v[1]
                 try:
                     a_data = self.data_graph.EG_append_edge((n,n1), root_graph=root_graph)
+                    shape_data, style_data = v[2]
+                    shape_data = str(shape_data.strip())
+                    style_data = str(style_data.strip())
+
                 except:
-                    wx.MessageBox('Can\'t add edge "%s -> %s", maybe the edge was existed.'%(n.decode('utf8'),n1.decode('utf8')), 
+                    wx.MessageBox('Can\'t add edge "%s -> %s", maybe the edge was existed.'%(n,n1), 
                                   'Found duplicated edge name')
                     return
                 ### Add item to tree.
-                a_id = self.m_tree.AppendItem(root_id, n.decode('utf8')+' -> '+n1.decode('utf8'))
-                self.m_tree.SetItemPyData(a_id, ('edge', a_data))
+                a_id = self.m_tree.AppendItem(root_id, n+' -> '+n1)
+                self.m_tree.SetItemData(a_id, ('edge', a_data))
                 self.m_tree.SetItemImage(a_id, self.img_dict[('edge', 'color')])
-            else: ### Add subgraph.
+                a_data.set('shape', add_double_quote(shape_data))
+                a_data.set('style', add_double_quote(style_data))
+            
+            elif v[0] == 'subgraph': ### Add edge.
 
                 try:
                     a_data = self.data_graph.EG_append_subgraph(v[1], root_graph=root_graph)
                 except:
-                    wx.MessageBox('Can\'t add item "%s", maybe the same-named subgraph was existed.'%(v[1].decode('utf8')), 
+                    wx.MessageBox('Can\'t add item "%s", maybe the same-named subgraph was existed.'%(v[1]), 
                                   'Found duplicated subgraph name')
                     return
                 ### Add subgraph root to tree.
-                a_id = self.m_tree.AppendItem(root_id, v[1].decode('utf8'))
-                self.m_tree.SetItemPyData(a_id, ('graph', a_data))
+                a_id = self.m_tree.AppendItem(root_id, v[1])
+                self.m_tree.SetItemData(a_id, ('graph', a_data))
                 self.m_tree.SetItemImage(a_id, self.img_dict[('graph', 'color')])
                 ### Add wildcard nodes to subgraph.
                 for n in ['node', 'edge']:
                     n_id = self.m_tree.AppendItem(a_id, n)
                     n_data = self.data_graph.EG_get_node_by_name(n, root_graph=a_data)
-                    self.m_tree.SetItemPyData(n_id, ('node', n_data) )
+                    self.m_tree.SetItemData(n_id, ('node', n_data) )
                     self.m_tree.SetItemImage(n_id, self.img_dict[(n, 'gray')])
                 self.m_tree.Expand(a_id)
+            
+            
+                
             
             ### Set label.
             label = escape_dot_string(dlg.m_textCtrl_label.GetValue())
             if label != '':
-                a_data.set('label', add_double_quote(label.encode('utf8')))
+                a_data.set('label', add_double_quote(label))
             
             ### Select the item in tree.
             if not a_id is None:
@@ -702,6 +796,89 @@ class MF(MainFrame):
             
         dlg.Destroy()
         return
+
+    def onCopyItem(self, event):
+        
+        selected_id = self.m_tree.GetSelection()
+        if not selected_id.IsOk():
+            return 
+
+        i_name, i_type, item = self.GetSelectedItem()
+
+        i_id = self.m_tree.GetSelection()
+        
+        if not i_id.IsOk():
+            wx.MessageBox("Please select a item as the append location.",
+                          'Don\'t know where to append', 
+                          style=wx.OK|wx.ICON_EXCLAMATION)
+            return
+        
+        _, i_type, i_graph = self.GetSelectedItem()
+
+        if i_name not in ["node", "edge", "graph", "digraph"] and i_type=="node":
+            ### Read attrs from data_graph.
+            data_attrs = {}
+            if not item is None:
+                data_attrs = item.get_attributes()
+            else:
+                return
+            
+            if i_type == 'graph':
+                root_id = i_id
+                root_graph = i_graph
+            else:
+                root_id = self.m_tree.GetItemParent(i_id)
+                root_graph = self.m_tree.GetItemData(root_id)[1]
+
+            i_name += '_copy'
+            if not i_name.startswith('node_'):
+                i_name = 'node_' + i_name
+
+            gnodes = self.data_graph.EG_get_all_node_names()
+
+            counter = 1
+            while i_name in gnodes:
+                if counter > 1:
+                    i_name = i_name[:-1]
+                i_name += str(counter)
+                counter += 1
+
+            try:
+                i_name = i_name[5:]
+                a_data = self.data_graph.EG_append_node(i_name, root_graph=root_graph)
+            except:
+                wx.MessageBox('Can\'t add item "%s", maybe the same-named item was existed.'%(i_name), 
+                              'Found duplicated node name')
+                return
+                
+            ### Add item to tree.
+            a_id = self.m_tree.AppendItem(root_id, i_name)
+
+            for itemattribute in list(data_attrs.keys()):
+                itemattrval = data_attrs[itemattribute]
+                if itemattribute == 'label':
+                    counter = counter - 1
+                    if counter:
+                        labelprefix = "Copied_{} content -> ".format(counter)
+                    else:
+                        labelprefix = "Copied content -> "
+                    
+                    itemattrval = labelprefix + itemattrval.replace('\"','')
+                
+                a_data.set(itemattribute, add_double_quote(itemattrval))
+            
+            self.m_tree.SetItemData(a_id, ('node', a_data))
+            self.m_tree.SetItemImage(a_id, self.img_dict[('node', 'color')])
+
+            ### Select the item in tree.
+            if not a_id is None:
+                self.m_tree.SelectItem(a_id, True)
+            
+            self.is_data_changed = True
+            self.update_graph()
+
+            return
+
     
     def onDeleteItem(self, event):
         
@@ -735,7 +912,7 @@ class MF(MainFrame):
         
         # Get root of selected item.
         r_id = self.m_tree.GetItemParent(selected_id)
-        root_graph = self.m_tree.GetItemPyData(r_id)[1]
+        root_graph = self.m_tree.GetItemData(r_id)[1]
             
         if i_type == 'node':      ### Remove node from graph.
             self.data_graph.EG_remove_node(i_name, root_graph=root_graph)
@@ -765,7 +942,7 @@ class MF(MainFrame):
             return None
         
         i_name = self.m_tree.GetItemText(i).strip()
-        i_type, item = self.m_tree.GetItemPyData(i)
+        i_type, item = self.m_tree.GetItemData(i)
     
         return i_name, i_type, item
 
@@ -820,7 +997,6 @@ class MF(MainFrame):
                     g_id = pm.Append(g_attr)
 
                 for a_name in a_list:
-                    
                     pg = ExtPG.buildPG(a_name, i_type)
                     if _g is None:
                         pm.Append(pg)
@@ -830,12 +1006,17 @@ class MF(MainFrame):
                     # Set attr value read from data_graph.
                     if a_name in data_attrs.keys():
                         v = data_attrs[a_name]
-                        pg.SetValue(remove_double_quote(to_unicode(v).decode('utf8')))
+                        pg.SetValue(remove_double_quote(to_unicode(v)))
                         # Set background to blue if attr value is different from default.
                         pg.SetBackgroundColour('#ffffc0', -1)
-                    
-                #if not _g is None:
-                #    pm.Collapse(g_attr)
+                
+                if not  _g is None:
+                    pm.Collapse(_g)
+                
+                
+            if cates.index(_c):
+                pm.Collapse(_c)
+
         return
     
     def onPGActive(self, event):
@@ -864,13 +1045,13 @@ class MF(MainFrame):
             key = key.split('.')[-1]
 
         v = p.GetValue()
-        if isinstance(v, basestring):
-            v = v.strip().encode('utf8')
-        elif isinstance(v, types.BooleanType):
+        if isinstance(v, str):
+            v = v.strip()
+        elif isinstance(v, bool):
             v = str(v).lower()
         else:
             v = str(v)
-
+        
         ### Update attr.
         uv = to_unicode(v); udv = to_unicode(str(p.GetDefaultValue()))
         if uv == '' or uv.lower() == udv.lower():
@@ -944,7 +1125,7 @@ class MF(MainFrame):
             self.is_data_changed = False
             self.update_graph(g)
 
-        except ExtParser.ParseException, _:
+        except ExtParser.ParseException as _:
             wx.MessageBox('Can\'t load specified file. Maybe file format error. \n'+\
                           'Be sure the file is in graphviz dot language, or check \n'+\
                           'if some syntax error existed in specified file. ',
@@ -956,7 +1137,7 @@ class MF(MainFrame):
         
         if self.file_path is None:
             fd = wx.FileDialog(self, "Save Dot File", "", "", 
-                               "Dot Files (*.*)|*.*", wx.SAVE|wx.FD_SAVE)
+                               "Dot Files (*.*)|*.*", wx.FD_SAVE)
             if fd.ShowModal() == wx.ID_OK:
                 fp = fd.GetPath()
             else:
@@ -994,7 +1175,7 @@ class MF(MainFrame):
     def onSaveAs(self, event):
         
         fd = wx.FileDialog(self, "Save Dot File As", "", "", 
-                           "Dot Files (*.*)|*.*", wx.SAVE|wx.FD_SAVE)
+                           "Dot Files (*.*)|*.*", wx.FD_SAVE)
         if fd.ShowModal() == wx.ID_OK:
             fp = fd.GetPath()
         else:
@@ -1043,7 +1224,7 @@ class MF(MainFrame):
     
     def onViewSource(self, event):
         dlg = DS(self)
-        dlg.SetScript(self.data_graph.EG_to_string().decode('utf8'))
+        dlg.SetScript(self.data_graph.EG_to_string())
         if dlg.ShowModal() == wx.ID_OK:
             self.update_graph(dlg.graph)
             self.is_data_changed = True
@@ -1069,7 +1250,7 @@ class MF(MainFrame):
         
         y += h
         
-        self.PopupMenuXY( self.m_menu_help, x, y)
+        self.PopupMenu( self.m_menu_help, x, y)
         
     def onAbout(self, event):
         ad = DialogAbout(self)
