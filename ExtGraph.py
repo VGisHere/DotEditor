@@ -1,6 +1,6 @@
 # coding=utf8
 '''
-Copyright (R) 2015 Vincent.H <forever.h@gmail.com>
+Copyright (R) 2021 Vaibhav.Gilhotra <spaceholder_email>
 
 Published under Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0.html).
 -------------------------------------------------------------------------------------
@@ -19,12 +19,12 @@ import tempfile
 import DEUtils
 
 
-TEMP_IMG_FILE = tempfile.gettempdir()+'/de_tempimg'
+TEMP_IMG_FILE = tempfile.gettempdir()+'/de_tempimg.png'
 
 TEMPLATE_DOT = DEUtils.resource_path('GraphTemplate.dot')
 INIT_SCRIPT = '''
 digraph G {
-    rankdir=LR;
+    rankdir=TB;
     node [fontname="serif"];
     edge [fontname="serif"];
 }
@@ -57,7 +57,7 @@ class ExtGraph(pydot.Dot):
                     g = ExtParser.parse_file(template_file)
             except:
                 g = ExtParser.parse_string(INIT_SCRIPT)
-                
+            
             self.obj_dict = g.obj_dict
             
         # If create graph from parsing program...
@@ -118,7 +118,7 @@ class ExtGraph(pydot.Dot):
     def refresh_bitmap(self):
 
         self.write(TEMP_IMG_FILE, self.prog, 'png')
-        self.__bitmap = wx.EmptyBitmap(0,0)
+        self.__bitmap = wx.Bitmap(0,0)
         self.__bitmap.LoadFile(TEMP_IMG_FILE, wx.BITMAP_TYPE_PNG)
 
         return
@@ -171,7 +171,7 @@ class ExtGraph(pydot.Dot):
         if not(n is None):
             raise Exception('Unique error. The node with name "%s" was existed in the graph.'%uname)
         
-        uname = add_double_quote(uname)
+        uname = "node_"+uname
         
         n = pydot.Node(uname)
         root_graph.add_node(n)
@@ -196,8 +196,8 @@ class ExtGraph(pydot.Dot):
         if not(e is None):
             raise Exception('Unique error. The edge with same names was existed in the graph.')
         
-        nameA = add_double_quote(nameA)
-        nameB = add_double_quote(nameB)
+        # nameA = add_double_quote(nameA)
+        # nameB = add_double_quote(nameB)
         
         e = pydot.Edge(src=nameA, dst=nameB)
         
@@ -208,7 +208,8 @@ class ExtGraph(pydot.Dot):
         self.refresh_bitmap()
         
         return e
-
+    
+    
     def EG_append_subgraph(self, graphname, root_graph=None):
         "Add node to 'root_graph' only by name."
         uname = to_unicode(graphname.strip())
@@ -384,8 +385,8 @@ class ExtGraph(pydot.Dot):
         for sg in root_graph.obj_dict['subgraphs'].values():
             sgraph_obj_dicts.extend(sg)
         
-        obj_list = [ (obj['sequence'], obj) for obj in (edge_obj_dicts + node_obj_dicts + sgraph_obj_dicts) ]
-        obj_list.sort()
+        obj_list = sorted([ (obj['sequence'], obj) for obj in (edge_obj_dicts + node_obj_dicts + sgraph_obj_dicts) ])
+        # obj_list.sort()
         
         for _, obj in obj_list:
             if obj['type'] == 'node':
@@ -434,11 +435,11 @@ class ExtGraph(pydot.Dot):
 if __name__ == '__main__':
 
     sd = ExtGraph()
-    s = u"中文"
-    s1 = s.encode('utf8')
+    s = u"हिंदी"
+    s1 = s
 
     sd.EG_append_node(s)
     
     sd.EG_append_edge((s,s1))
     
-    print sd.to_string()
+    print(sd.to_string())

@@ -22,7 +22,7 @@ import codecs
 
 from pyparsing import __version__ as pyparsing_version
 
-from pyparsing import ( nestedExpr, Literal, CaselessLiteral, Word, Upcase, OneOrMore, ZeroOrMore,
+from pyparsing import ( nestedExpr, Literal, CaselessLiteral, Word, OneOrMore, ZeroOrMore,
     Forward, NotAny, delimitedList, oneOf, Group, Optional, Combine, alphas, nums,
     restOfLine, cStyleComment, nums, alphanums, printables, empty, quotedString,
     ParseException, ParseResults, CharsNotIn, dblQuotedString, QuotedString, ParserElement )
@@ -68,7 +68,7 @@ class DefaultStatement(P_AttrList):
 
 top_graphs = list()
 
-def push_top_graph_stmt(str, loc, toks):
+def push_top_graph_stmt(strng, loc, toks):
 
     attrs = {}
     g = None
@@ -76,7 +76,7 @@ def push_top_graph_stmt(str, loc, toks):
     for element in toks:
     
         if( isinstance(element, (ParseResults, tuple, list)) and
-            len(element) == 1 and isinstance(element[0], basestring) ):
+            len(element) == 1 and (type(element[0]) == str) ):
             
             element = element[0]
             
@@ -84,7 +84,7 @@ def push_top_graph_stmt(str, loc, toks):
             attrs['strict'] = True
             
         elif element in ['graph', 'digraph']:
-
+            
             attrs = {}
             
             g = pydot.Dot(graph_type=element, **attrs)
@@ -92,10 +92,10 @@ def push_top_graph_stmt(str, loc, toks):
             
             top_graphs.append( g )
             
-        elif isinstance( element, basestring):
+        elif (type(element) == str):
             g.set_name( element )
             
-        elif isinstance(element, pydot.Subgraph):
+        elif (type(element) == pydot.Subgraph):
         
             g.obj_dict['attributes'].update( element.obj_dict['attributes'] )
             g.obj_dict['edges'].update( element.obj_dict['edges'] )
@@ -111,7 +111,7 @@ def push_top_graph_stmt(str, loc, toks):
             add_elements(g, element)
             
         else:
-            raise ValueError, "Unknown element statement: %r " % element
+            raise ValueError("Unknown element statement: {} ".format(element))
     
     
     for g in top_graphs:
@@ -136,7 +136,7 @@ def update_parent_graph_hierarchy(g, parent_graph=None, level=0):
         else:
             item_dict = g.obj_dict
             
-        if not item_dict.has_key( key_name ):
+        if not key_name in item_dict:
             continue
 
         for key, objs in item_dict[key_name].items():
@@ -176,7 +176,7 @@ def add_elements(g, toks, defaults_graph=None, defaults_node=None, defaults_edge
         defaults_node = {}
     if defaults_edge is None:
         defaults_edge = {}
-        
+    
     for elm_idx, element in enumerate(toks):
         
         if isinstance(element, (pydot.Subgraph, pydot.Cluster)):
@@ -205,6 +205,11 @@ def add_elements(g, toks, defaults_graph=None, defaults_node=None, defaults_edge
             
                 default_graph_attrs = pydot.Node('graph', **element.attrs)
                 g.add_node(default_graph_attrs)
+            
+            # elif element.default_type == 'digraph':
+            
+            #     default_graph_attrs = pydot.Node('digraph', **element.attrs)
+            #     g.add_node(default_graph_attrs)
 
             elif element.default_type == 'node':
             
@@ -218,24 +223,24 @@ def add_elements(g, toks, defaults_graph=None, defaults_node=None, defaults_edge
                 defaults_edge.update(element.attrs)
 
             else:
-                raise ValueError, "Unknown DefaultStatement: %s " % element.default_type
+                raise ValueError("Unknown DefaultStatement: %s " % element.default_type)
                 
         elif isinstance(element, P_AttrList):
         
             g.obj_dict['attributes'].update(element.attrs)
 
         else:
-            raise ValueError, "Unknown element statement: %r" % element
+            raise ValueError("Unknown element statement: %r" % element)
 
 
-def push_graph_stmt(str, loc, toks):            
+def push_graph_stmt(strng, loc, toks):            
                        
     g = pydot.Subgraph('')
     add_elements(g, toks)
     return g
 
 
-def push_subgraph_stmt(str, loc, toks):
+def push_subgraph_stmt(strng, loc, toks):
 
     g = pydot.Subgraph('')
     for e in toks:
@@ -252,7 +257,7 @@ def push_subgraph_stmt(str, loc, toks):
     return g
 
 
-def push_default_stmt(str, loc, toks):
+def push_default_stmt(strng, loc, toks):
 
     # The pydot class instances should be marked as
     # default statements to be inherited by actual
@@ -267,10 +272,10 @@ def push_default_stmt(str, loc, toks):
     if default_type in ['graph', 'node', 'edge']:
         return DefaultStatement(default_type, attrs)
     else:
-        raise ValueError, "Unknown default statement: %r " % toks
+        raise ValueError("Unknown default statement: %r " % toks)
 
 
-def push_attr_list(str, loc, toks):
+def push_attr_list(strng, loc, toks):
 
     p = P_AttrList(toks)
     return p
@@ -296,7 +301,7 @@ def do_node_ports(node):
     return node_port
 
     
-def push_edge_stmt(str, loc, toks):
+def push_edge_stmt(strng, loc, toks):
     
     tok_attrs = [a for a in toks if isinstance(a, P_AttrList)]
     attrs = {}
@@ -524,9 +529,9 @@ def parse_dot_data(data):
         else:
             return [g for g in tokens]
         
-    except ParseException, err:
+    except ParseException as err:
     
-        print err.line
-        print " "*(err.column-1) + "^"
-        print err
+        print(err.line)
+        print(" "*(err.column-1) + "^")
+        print(err)
         return None

@@ -1,5 +1,5 @@
 /*
- * Copyright (R) 2015 Vincent.H <forever.h@gmail.com>
+ * Copyright (R) 2021 Vaibhav.Gilhotra <spaceholder_email>
  * Published under Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0.html).
  *-------------------------------------------------------------------------------------
  *
@@ -7,7 +7,7 @@
  */
 
 digraph G {
-    rankdir=LR;
+    rankdir=TB;
     fontname="sans-serif";
     penwidth=0.1;
     node [fontname="serif", fontsize=13, fillcolor="1", colorscheme="blues4", color="2", fontcolor="4", style="filled"];

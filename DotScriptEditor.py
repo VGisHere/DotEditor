@@ -1,6 +1,6 @@
 # coding=utf8
 '''
-Copyright (R) 2015 Vincent.H <forever.h@gmail.com>
+Copyright (R) 2021 Vaibhav.Gilhotra <spaceholder_email>
 
 Published under Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0.html).
 -------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ class DS(DialogScript):
                      faceName='Monospace')
         ### Try find best programming-font.
         try:
-            if os.sys.platform == 'win32':
+            if os.sys.platform in ['win32', 'win64']:
                 ft = wx.Font(11, wx.FONTFAMILY_DEFAULT, 
                              wx.FONTSTYLE_NORMAL, 
                              wx.FONTWEIGHT_NORMAL, 
@@ -102,7 +102,8 @@ class DS(DialogScript):
         except:
             pass
         
-        self.m_text_script.SetDefaultStyle(wx.TextAttr(font=ft))
+        # self.m_text_script.SetDefaultStyle(wx.TextAttr(font=ft))
+        self.m_text_script.SetDefaultStyle(wx.TextAttr())
         self.m_text_script.SetFont(ft)
         
         self.m_text_script.Bind(wx.EVT_KEY_DOWN, self.onTab)
@@ -123,10 +124,10 @@ class DS(DialogScript):
 
         script = self.m_text_script.GetValue()
         
-        ttable = parse_dot(script)
+        ttable = sorted(parse_dot(script))
         
         ### Fill 'PLAIN' token to blank in ttable ;)
-        ttable.sort()
+        # ttable.sort()
         new_table = []
         for x in range(len(ttable)):
             t = ttable[x]
@@ -169,7 +170,7 @@ class DS(DialogScript):
             return
         
         pos = self.m_text_script.GetInsertionPoint()
-        x, _ = self.m_text_script.PositionToXY(pos)
+        (x, _) = self.m_text_script.PositionToXY(pos)[1:]
         
         self.light_script_block(pos-x, x)
         
@@ -184,12 +185,12 @@ class DS(DialogScript):
             strict_status = True
             
         try:
-            g = ExtParser.parse_string(script.encode('utf8'))
+            g = ExtParser.parse_string(script)
             ### Hack the strcit status cause bug of pydot.
             g.set_strict(strict_status)
             g = ExtGraph.ExtGraph(obj_dict=g.obj_dict)
 
-        except ExtParser.ParseException, err:
+        except ExtParser.ParseException as err:
             
             pos = self.m_text_script.XYToPosition(0, err.lineno-1)
             w = self.m_text_script.GetLineLength(err.lineno-1)
@@ -201,7 +202,7 @@ class DS(DialogScript):
             
             return
         
-        self.SetScript(g.EG_to_string().decode('utf8'))
+        self.SetScript(g.EG_to_string())
         
         return
     
@@ -217,14 +218,14 @@ class DS(DialogScript):
             strict_status = True
             
         try:
-            g = ExtParser.parse_string(script.encode('utf8'))
+            g = ExtParser.parse_string(script)
             ### Hack the strcit status cause bug of pydot.
             g.set_strict(strict_status)
             
             self.graph = ExtGraph.ExtGraph(obj_dict=g.obj_dict)
             self.EndModal(wx.ID_OK)
 
-        except ExtParser.ParseException, err:
+        except ExtParser.ParseException as err:
             
             pos = self.m_text_script.XYToPosition(0, err.lineno-1)
             w = self.m_text_script.GetLineLength(err.lineno-1)

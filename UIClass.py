@@ -18,9 +18,9 @@ import wx.propgrid as pg
 class MainFrame ( wx.Frame ):
 	
 	def __init__( self, parent ):
-		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"DotEditor", pos = wx.DefaultPosition, size = wx.Size( 942,688 ), style = wx.DEFAULT_FRAME_STYLE )
+		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = u"DotEditor", pos = wx.DefaultPosition, size = wx.Size( 955,688 ), style = wx.DEFAULT_FRAME_STYLE )
 		
-		self.SetSizeHintsSz( wx.Size( 800,600 ), wx.DefaultSize )
+		self.SetSizeHints( wx.Size( 800,600 ), wx.DefaultSize )
 		self.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, wx.EmptyString ) )
 		self.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOW ) )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
@@ -43,50 +43,50 @@ class MainFrame ( wx.Frame ):
 		fgSizer15.Add( self.m_panel17, 1, wx.EXPAND |wx.ALL, 0 )
 		
 		
-		fgSizer15.AddSpacer( ( 8, 30), 1, wx.EXPAND, 5 )
+		fgSizer15.Add( ( 8, 30), 1, wx.EXPAND, 5 )
 		
 		self.m_bpButton_new = wx.BitmapButton( self.m_panel16, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 50,-1 ), wx.BU_AUTODRAW|wx.NO_BORDER )
 		
 		self.m_bpButton_new.SetBitmapFocus( wx.NullBitmap )
-		self.m_bpButton_new.SetBitmapHover( wx.NullBitmap )
+		self.m_bpButton_new.SetBitmapCurrent( wx.NullBitmap )
 		self.m_bpButton_new.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
-		self.m_bpButton_new.SetToolTipString( u"Create a new Graph" )
+		self.m_bpButton_new.SetToolTip( u"Create a new Graph" )
 		
 		fgSizer15.Add( self.m_bpButton_new, 0, wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 5 )
 		
 		self.m_bpButton_open = wx.BitmapButton( self.m_panel16, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 50,-1 ), wx.BU_AUTODRAW|wx.NO_BORDER )
 		
 		self.m_bpButton_open.SetBitmapFocus( wx.NullBitmap )
-		self.m_bpButton_open.SetBitmapHover( wx.NullBitmap )
+		self.m_bpButton_open.SetBitmapCurrent( wx.NullBitmap )
 		self.m_bpButton_open.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
-		self.m_bpButton_open.SetToolTipString( u"Open a existed Graph file" )
+		self.m_bpButton_open.SetToolTip( u"Open a existed Graph file" )
 		
 		fgSizer15.Add( self.m_bpButton_open, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 		
 		self.m_bpButton_save = wx.BitmapButton( self.m_panel16, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 50,-1 ), wx.BU_AUTODRAW|wx.NO_BORDER )
 		
 		self.m_bpButton_save.SetBitmapFocus( wx.NullBitmap )
-		self.m_bpButton_save.SetBitmapHover( wx.NullBitmap )
+		self.m_bpButton_save.SetBitmapCurrent( wx.NullBitmap )
 		self.m_bpButton_save.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
-		self.m_bpButton_save.SetToolTipString( u"Save graph to file" )
+		self.m_bpButton_save.SetToolTip( u"Save graph to file" )
 		
 		fgSizer15.Add( self.m_bpButton_save, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 		
 		self.m_bpButton_script = wx.BitmapButton( self.m_panel16, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 50,-1 ), wx.BU_AUTODRAW|wx.NO_BORDER )
 		
 		self.m_bpButton_script.SetBitmapFocus( wx.NullBitmap )
-		self.m_bpButton_script.SetBitmapHover( wx.NullBitmap )
+		self.m_bpButton_script.SetBitmapCurrent( wx.NullBitmap )
 		self.m_bpButton_script.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
-		self.m_bpButton_script.SetToolTipString( u"View dot script" )
+		self.m_bpButton_script.SetToolTip( u"View dot script" )
 		
 		fgSizer15.Add( self.m_bpButton_script, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 		
 		self.m_bpButton_export = wx.BitmapButton( self.m_panel16, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 50,-1 ), wx.BU_AUTODRAW|wx.NO_BORDER )
 		
 		self.m_bpButton_export.SetBitmapFocus( wx.NullBitmap )
-		self.m_bpButton_export.SetBitmapHover( wx.NullBitmap )
+		self.m_bpButton_export.SetBitmapCurrent( wx.NullBitmap )
 		self.m_bpButton_export.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
-		self.m_bpButton_export.SetToolTipString( u"Save graph to image file" )
+		self.m_bpButton_export.SetToolTip( u"Save graph to image file" )
 		
 		fgSizer15.Add( self.m_bpButton_export, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 		
@@ -96,7 +96,7 @@ class MainFrame ( wx.Frame ):
 		fgSizer15.Add( self.m_button_save_as, 0, wx.ALL, 5 )
 		
 		
-		fgSizer15.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
+		fgSizer15.Add( ( 0, 0), 1, wx.EXPAND, 5 )
 		
 		self.m_bpButton_help = wx.BitmapButton( self.m_panel16, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 50,-1 ), wx.BU_AUTODRAW|wx.NO_BORDER )
 		self.m_bpButton_help.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
@@ -149,32 +149,44 @@ class MainFrame ( wx.Frame ):
 		self.m_bpButton_graphsetting = wx.BitmapButton( self.m_panel7, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW|wx.NO_BORDER )
 		
 		self.m_bpButton_graphsetting.SetBitmapFocus( wx.NullBitmap )
-		self.m_bpButton_graphsetting.SetBitmapHover( wx.NullBitmap )
+		self.m_bpButton_graphsetting.SetBitmapCurrent( wx.NullBitmap )
 		self.m_bpButton_graphsetting.SetBackgroundColour( wx.Colour( 255, 255, 255 ) )
+		self.m_bpButton_graphsetting.SetToolTip( u"View Graph Settings" )
 		
 		fgSizer7.Add( self.m_bpButton_graphsetting, 0, wx.ALL, 5 )
 		
 		
-		fgSizer7.AddSpacer( ( 12, 0), 1, wx.EXPAND, 5 )
+		fgSizer7.Add( ( 12, 0), 1, wx.EXPAND, 5 )
 		
 		self.m_bpButton_add = wx.BitmapButton( self.m_panel7, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW|wx.NO_BORDER )
 		
 		self.m_bpButton_add.SetBitmapFocus( wx.NullBitmap )
-		self.m_bpButton_add.SetBitmapHover( wx.NullBitmap )
+		self.m_bpButton_add.SetBitmapCurrent( wx.NullBitmap )
 		self.m_bpButton_add.SetBackgroundColour( wx.Colour( 255, 255, 255 ) )
+		self.m_bpButton_add.SetToolTip( u"Add new Item" )
 		
 		fgSizer7.Add( self.m_bpButton_add, 0, wx.ALL, 5 )
 		
 		self.m_bpButton_minus = wx.BitmapButton( self.m_panel7, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW|wx.NO_BORDER )
 		
 		self.m_bpButton_minus.SetBitmapFocus( wx.NullBitmap )
-		self.m_bpButton_minus.SetBitmapHover( wx.NullBitmap )
+		self.m_bpButton_minus.SetBitmapCurrent( wx.NullBitmap )
 		self.m_bpButton_minus.SetBackgroundColour( wx.Colour( 255, 255, 255 ) )
+		self.m_bpButton_minus.SetToolTip( u"Delete selected Item" )
 		
 		fgSizer7.Add( self.m_bpButton_minus, 0, wx.ALL, 5 )
+
+		self.m_bpButton_copy = wx.BitmapButton( self.m_panel7, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW|wx.NO_BORDER )
+		
+		self.m_bpButton_copy.SetBitmapFocus( wx.NullBitmap )
+		self.m_bpButton_copy.SetBitmapCurrent( wx.NullBitmap )
+		self.m_bpButton_copy.SetBackgroundColour( wx.Colour( 255, 255, 255 ) )
+		self.m_bpButton_copy.SetToolTip( u"Copy an Item" )
+		
+		fgSizer7.Add( self.m_bpButton_copy, 0, wx.ALL, 5 )
 		
 		
-		fgSizer7.AddSpacer( ( 5, 0), 1, wx.EXPAND, 5 )
+		fgSizer7.Add( ( 5, 0), 1, wx.EXPAND, 5 )
 		
 		
 		self.m_panel7.SetSizer( fgSizer7 )
@@ -261,7 +273,7 @@ class MainFrame ( wx.Frame ):
 		fgSizer11.Add( self.m_staticText6, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 1 )
 		
 		
-		fgSizer11.AddSpacer( ( 0, 26), 1, wx.EXPAND, 5 )
+		fgSizer11.Add( ( 0, 26), 1, wx.EXPAND, 5 )
 		
 		self.m_staticText_zoom = wx.StaticText( self.m_panel12, wx.ID_ANY, u"Zoom:100%", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_RIGHT )
 		self.m_staticText_zoom.Wrap( -1 )
@@ -275,7 +287,7 @@ class MainFrame ( wx.Frame ):
 		fgSizer11.Add( self.m_button16, 0, wx.ALIGN_CENTER|wx.FIXED_MINSIZE, 5 )
 		
 		
-		fgSizer11.AddSpacer( ( 3, 0), 1, wx.EXPAND, 5 )
+		fgSizer11.Add( ( 3, 0), 1, wx.EXPAND, 5 )
 		
 		
 		self.m_panel12.SetSizer( fgSizer11 )
@@ -338,6 +350,7 @@ class MainFrame ( wx.Frame ):
 		self.m_bpButton_graphsetting.Bind( wx.EVT_BUTTON, self.onGraphSetting )
 		self.m_bpButton_add.Bind( wx.EVT_BUTTON, self.onAppendItem )
 		self.m_bpButton_minus.Bind( wx.EVT_BUTTON, self.onDeleteItem )
+		self.m_bpButton_copy.Bind( wx.EVT_BUTTON, self.onCopyItem )
 		self.m_tree.Bind( wx.EVT_TREE_SEL_CHANGED, self.onItemSelected )
 		self.m_pgManager1.Bind( pg.EVT_PG_CHANGED, self.onPGChanged )
 		self.m_button16.Bind( wx.EVT_BUTTON, self.onZoom100 )
@@ -378,6 +391,9 @@ class MainFrame ( wx.Frame ):
 	def onDeleteItem( self, event ):
 		event.Skip()
 	
+	def onCopyItem( self, event ):
+		event.Skip()
+	
 	def onItemSelected( self, event ):
 		event.Skip()
 	
@@ -406,9 +422,9 @@ class MainFrame ( wx.Frame ):
 class DialogAppend ( wx.Dialog ):
 	
 	def __init__( self, parent ):
-		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Append Item", pos = wx.DefaultPosition, size = wx.Size( 416,366 ), style = wx.DEFAULT_DIALOG_STYLE )
+		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Append Item", pos = wx.DefaultPosition, size = wx.Size( 425,375 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		fgSizer18 = wx.FlexGridSizer( 2, 1, 0, 0 )
@@ -431,23 +447,21 @@ class DialogAppend ( wx.Dialog ):
 		
 		fgSizer16.Add( self.m_panel21, 1, wx.ALL|wx.EXPAND, 0 )
 		
-		fgSizer17 = wx.FlexGridSizer( 4, 1, 0, 0 )
+		fgSizer17 = wx.FlexGridSizer( 3, 1, 0, 0 )
 		fgSizer17.AddGrowableCol( 0 )
-		fgSizer17.AddGrowableRow( 1 )
+		fgSizer17.AddGrowableRow( 2 )
 		fgSizer17.SetFlexibleDirection( wx.BOTH )
 		fgSizer17.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 		
-		m_radioBox_typeChoices = [ u"Node", u"Edge", u"Subgraph" ]
+		m_radioBox_typeChoices = [ u"Node", u"Edge", u"Subgraph"]#, u"Same Rank" ]
 		self.m_radioBox_type = wx.RadioBox( self.m_panel27, wx.ID_ANY, u"Item Type", wx.DefaultPosition, wx.DefaultSize, m_radioBox_typeChoices, 3, wx.RA_SPECIFY_COLS )
 		self.m_radioBox_type.SetSelection( 0 )
-		fgSizer17.Add( self.m_radioBox_type, 0, wx.ALL|wx.EXPAND, 5 )
+		fgSizer17.Add( self.m_radioBox_type, 0, wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 0)
 		
 		self.m_panel_node = wx.Panel( self.m_panel27, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		self.m_panel_node.SetBackgroundColour( wx.Colour( 255, 255, 255 ) )
 		
-		fgSizer2 = wx.FlexGridSizer( 3, 2, 0, 0 )
-		fgSizer2.AddGrowableCol( 1 )
-		fgSizer2.AddGrowableRow( 2 )
+		fgSizer2 = wx.FlexGridSizer( 2, 4, 0, 0 )
 		fgSizer2.SetFlexibleDirection( wx.BOTH )
 		fgSizer2.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 		
@@ -469,25 +483,59 @@ class DialogAppend ( wx.Dialog ):
 		
 		fgSizer2.Add( self.m_comboBox_nodeB, 0, wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 5 )
 		
-		self.m_staticText16 = wx.StaticText( self.m_panel_node, wx.ID_ANY, u"Lable:", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_RIGHT )
+		
+
+		from AttrsDef import E_SHAPE_MIN, E_STYLE_MIN, E_EDGE_TYPE_MIN, E_EDGE_STYLE_MIN
+		self.m_staticText20 = wx.StaticText( self.m_panel_node, wx.ID_ANY, u"Style:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText20.Wrap( -1 )
+		fgSizer2.Add( self.m_staticText20, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT, 5 )
+		
+		self.m_comboBox_style = wx.ComboBox( self.m_panel_node, wx.ID_ANY, E_STYLE_MIN[0], wx.DefaultPosition, wx.DefaultSize, E_STYLE_MIN, 0 )
+		# fgSizer2.Add( self.m_comboBox_style, 0, wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 5 )
+		fgSizer2.Add( self.m_comboBox_style, 0, wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 5 )
+
+		self.m_staticText21 = wx.StaticText( self.m_panel_node, wx.ID_ANY, u"Shape:", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText21.Wrap( -1 )
+		fgSizer2.Add( self.m_staticText21, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT, 5 )
+		
+		self.m_comboBox_shape = wx.ComboBox( self.m_panel_node, wx.ID_ANY, E_SHAPE_MIN[0], wx.DefaultPosition, wx.DefaultSize, E_SHAPE_MIN, 0 )
+		fgSizer2.Add( self.m_comboBox_shape, 0, wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 5 )
+		
+		# fgSizer16.Add( fgSizer2, 1, wx.EXPAND, 5 )
+		fgSizer2_2 = wx.FlexGridSizer( 1, 2, 0, 0 )
+		fgSizer2_2.AddGrowableCol( 1 )
+		fgSizer2_2.AddGrowableRow( 0 )
+		fgSizer2_2.SetFlexibleDirection( wx.BOTH )
+		fgSizer2_2.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+
+		self.m_panel_node_2 = wx.Panel( self.m_panel27, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
+		self.m_panel_node_2.SetBackgroundColour( wx.Colour( 255, 255, 255 ) )
+		
+		self.m_staticText16 = wx.StaticText( self.m_panel_node_2, wx.ID_ANY, u"Label:", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_RIGHT )
 		self.m_staticText16.Wrap( -1 )
-		fgSizer2.Add( self.m_staticText16, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 5 )
+		fgSizer2_2.Add( self.m_staticText16, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT|wx.ALL, 5 )
 		
-		self.m_textCtrl_label = wx.TextCtrl( self.m_panel_node, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.HSCROLL|wx.TE_MULTILINE|wx.TE_WORDWRAP )
+		self.m_textCtrl_label = wx.TextCtrl( self.m_panel_node_2, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, (1,4), wx.HSCROLL|wx.TE_MULTILINE|wx.TE_WORDWRAP )
 		self.m_textCtrl_label.SetBackgroundColour( wx.Colour( 255, 255, 192 ) )
-		self.m_textCtrl_label.SetToolTipString( u"Label of node/edge/subgraph.\nJust leave empty if no label to set." )
+		self.m_textCtrl_label.SetToolTip( u"Label of node/edge/subgraph.\nJust leave empty if no label to set." )
 		
-		fgSizer2.Add( self.m_textCtrl_label, 0, wx.ALL|wx.EXPAND, 5 )
+		fgSizer2_2.Add( self.m_textCtrl_label, 3, wx.ALL|wx.EXPAND, 5 )
 		
+		self.m_panel_node_2.SetSizerAndFit( fgSizer2_2 )
+		self.m_panel_node_2.Layout()
+		# fgSizer2_2.Fit( self.m_panel_node_2 )
 		
 		self.m_panel_node.SetSizer( fgSizer2 )
 		self.m_panel_node.Layout()
 		fgSizer2.Fit( self.m_panel_node )
-		fgSizer17.Add( self.m_panel_node, 1, wx.EXPAND |wx.ALL, 5 )
-		
-		
+
+
+		# fgSizer17.Add( self.m_panel_node, 1, wx.EXPAND |wx.ALL, 5 )
+		fgSizer17.Add( self.m_panel_node, 0, 0, 5 )
+		fgSizer17.Add( self.m_panel_node_2, 1, wx.EXPAND |wx.ALL, 5 )
+
 		fgSizer16.Add( fgSizer17, 1, wx.EXPAND, 5 )
-		
+
 		
 		self.m_panel27.SetSizer( fgSizer16 )
 		self.m_panel27.Layout()
@@ -558,7 +606,7 @@ class DialogScript ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Dot Script", pos = wx.DefaultPosition, size = wx.Size( 600,600 ), style = wx.DEFAULT_DIALOG_STYLE|wx.MAXIMIZE_BOX|wx.RESIZE_BORDER )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.Colour( 255, 255, 255 ) )
 		
 		fgSizer3 = wx.FlexGridSizer( 2, 1, 0, 0 )
@@ -672,7 +720,7 @@ class DialogAbout ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"About DotEditor", pos = wx.DefaultPosition, size = wx.Size( 405,388 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		fgSizer4 = wx.FlexGridSizer( 3, 1, 0, 0 )
 		fgSizer4.AddGrowableCol( 0 )
@@ -691,14 +739,16 @@ class DialogAbout ( wx.Dialog ):
 		self.m_bitmap1 = wx.StaticBitmap( self.m_panel28, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.Size( 128,128 ), 0 )
 		fgSizer27.Add( self.m_bitmap1, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
 		
-		self.m_staticText4 = wx.StaticText( self.m_panel28, wx.ID_ANY, u"Copyright by Vincent.H 2015", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.m_staticText4 = wx.StaticText( self.m_panel28, wx.ID_ANY, u"Copyright by Vaibhav.Gilhotra 2021", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText4.Wrap( -1 )
 		self.m_staticText4.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 92, False, wx.EmptyString ) )
 		self.m_staticText4.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		fgSizer27.Add( self.m_staticText4, 0, wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 5 )
 		
-		self.m_hyperlink1 = wx.HyperlinkCtrl( self.m_panel28, wx.ID_ANY, u"DotEditor Website", u"http://vincenthee.github.io/DotEditor/", wx.DefaultPosition, wx.DefaultSize, wx.HL_ALIGN_CENTRE|wx.HL_DEFAULT_STYLE )
+		from wx.lib.agw.hyperlink import HyperLinkCtrl
+
+		self.m_hyperlink1 = HyperLinkCtrl( self.m_panel28, wx.ID_ANY, label=u"Forked from DotEditor", URL=u"http://vincenthee.github.io/DotEditor/", pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.ALIGN_CENTER )
 		self.m_hyperlink1.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, wx.EmptyString ) )
 		
 		fgSizer27.Add( self.m_hyperlink1, 0, wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 5 )
@@ -747,7 +797,7 @@ class DialogGraphSetting ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Top Graph Setting", pos = wx.DefaultPosition, size = wx.Size( 384,236 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		self.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
 		
 		fgSizer13 = wx.FlexGridSizer( 2, 1, 0, 0 )
@@ -808,15 +858,7 @@ class DialogGraphSetting ( wx.Dialog ):
 		self.m_choice_layout_cmd.SetSelection( 0 )
 		fgSizer14.Add( self.m_choice_layout_cmd, 0, wx.ALL|wx.EXPAND, 5 )
 		
-		
-		fgSizer14.AddSpacer( ( 0, 5), 1, wx.EXPAND, 5 )
-		
-		
-		fgSizer14.AddSpacer( ( 0, 5), 1, wx.EXPAND, 5 )
-		
-		
 		fgSizer22.Add( fgSizer14, 1, wx.EXPAND, 5 )
-		
 		
 		self.m_panel15.SetSizer( fgSizer22 )
 		self.m_panel15.Layout()
@@ -868,7 +910,7 @@ class ImageSingleChoiceDialog ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 313,339 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		fgSizer21 = wx.FlexGridSizer( 3, 1, 0, 0 )
 		fgSizer21.AddGrowableCol( 0 )
@@ -931,7 +973,7 @@ class ArrowTypeDialog ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Arrow Type", pos = wx.DefaultPosition, size = wx.Size( 602,354 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		fgSizer23 = wx.FlexGridSizer( 3, 1, 0, 0 )
 		fgSizer23.AddGrowableCol( 0 )
@@ -961,7 +1003,7 @@ class ArrowTypeDialog ( wx.Dialog ):
 		gbSizer3.Add( self.m_bitmap_preview, wx.GBPosition( 0, 0 ), wx.GBSpan( 1, 1 ), wx.ALIGN_CENTER|wx.ALL, 5 )
 		
 		
-		gbSizer3.AddSpacer( ( 0, 0 ), wx.GBPosition( 4, 1 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
+		# gbSizer3.Add( ( 0, 0 ), wx.GBPosition( 4, 1 ), wx.GBSpan( 1, 1 ), wx.EXPAND, 5 )
 		
 		self.m_list = wx.ListCtrl( self.m_panel26, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LC_AUTOARRANGE|wx.LC_ICON )
 		gbSizer3.Add( self.m_list, wx.GBPosition( 0, 1 ), wx.GBSpan( 4, 1 ), wx.ALIGN_CENTER|wx.ALL|wx.EXPAND, 5 )
@@ -1024,7 +1066,7 @@ class ColorSingleChoiceDialog ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Pick a color", pos = wx.DefaultPosition, size = wx.Size( 305,372 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		fgSizer24 = wx.FlexGridSizer( 5, 1, 0, 0 )
 		fgSizer24.AddGrowableCol( 0 )
@@ -1101,7 +1143,7 @@ class ColorSchemeDialog ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"Pick a color scheme", pos = wx.DefaultPosition, size = wx.Size( 305,372 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		fgSizer24 = wx.FlexGridSizer( 5, 1, 0, 0 )
 		fgSizer24.AddGrowableCol( 0 )
@@ -1161,7 +1203,7 @@ class DialogHelp ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 773,693 ), style = wx.DEFAULT_DIALOG_STYLE|wx.MAXIMIZE_BOX|wx.RESIZE_BORDER )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		fgSizer29 = wx.FlexGridSizer( 1, 1, 0, 0 )
 		fgSizer29.AddGrowableCol( 0 )
@@ -1194,7 +1236,7 @@ class DialogTextEditor ( wx.Dialog ):
 	def __init__( self, parent ):
 		wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 408,324 ), style = wx.DEFAULT_DIALOG_STYLE )
 		
-		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+		self.SetSizeHints( wx.DefaultSize, wx.DefaultSize )
 		
 		fgSizer24 = wx.FlexGridSizer( 2, 1, 0, 0 )
 		fgSizer24.AddGrowableCol( 0 )

@@ -1,6 +1,6 @@
 # coding=utf8
 '''
-Copyright (R) 2015 Vincent.H <forever.h@gmail.com>
+Copyright (R) 2021 Vaibhav.Gilhotra <spaceholder_email>
 
 Published under Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0.html).
 -------------------------------------------------------------------------------------
@@ -43,10 +43,10 @@ if __name__ == '__main__':
     
     g = parse_string('''
     digraph G {
-        rankdir=LR;
+        rankdir=TB;
         111 -> 222;
         111;
     }
     ''')
-    print g.to_string()
+    print(g.to_string())
     

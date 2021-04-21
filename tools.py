@@ -1,6 +1,6 @@
 # coding=utf8
 '''
-Copyright (R) 2015 Vincent.H <forever.h@gmail.com>
+Copyright (R) 2021 Vaibhav.Gilhotra <spaceholder_email>
 
 Published under Apache 2.0 License (http://www.apache.org/licenses/LICENSE-2.0.html).
 -------------------------------------------------------------------------------------
@@ -21,7 +21,7 @@ def build_CB_dict():
     c_dict = {}
     for s in __all_stuff:
         c_cate = eval('colorbrewer.'+s)
-        if s[0] >= 'A' and s[0] <= 'Z' and isinstance(c_cate , types.DictType):
+        if s[0] >= 'A' and s[0] <= 'Z' and isinstance(c_cate , dict):
             for c_idx in c_cate.keys():
                 c_dict[s.lower()+str(c_idx)] = c_cate[c_idx]
     
@@ -30,8 +30,8 @@ def build_CB_dict():
 def store_colorbrewer():
     
     cd = build_CB_dict()
-    ckeys = cd.keys()
-    ckeys.sort()
+    ckeys = sorted(cd.keys())
+    # ckeys.sort()
 
     out_f = open('./resource/color_scheme/colorbrewer.csv', 'w')
     for k in ckeys:
@@ -77,7 +77,7 @@ def generate_platte():
     for scheme in AttrsDef.E_COLORSCHEME:
         fn = 'resource/palette/%s.png'%scheme
         all_files.append(fn)
-        color_dict = DEUtils.get_colors_in_schcme(scheme)
+        color_dict = DEUtils.get_colors_in_scheme(scheme)
         c_num = len(color_dict) 
         if c_num > 20: ### Too many color, use small rectangle to arrange.
             # Calc color rect.
@@ -89,8 +89,8 @@ def generate_platte():
                 w += 1
             blank_num = w*h - c_num
             # Arrange color.
-            colors = color_dict.keys()
-            colors.sort()
+            colors = sorted(color_dict.keys())
+            # colors.sort()
             pixels = []
             for c in colors:
                 r,g,b = color_dict[c]
@@ -100,8 +100,8 @@ def generate_platte():
             pixels = numpy.array(pixels)
             pixels = pixels.reshape(h,w,3)
         else:
-            colors = color_dict.keys()
-            colors.sort()
+            colors = sorted(color_dict.keys())
+            # colors.sort()
             pixels = []
             for c in colors:
                 r,g,b = color_dict[c]
